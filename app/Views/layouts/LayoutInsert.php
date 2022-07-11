@@ -47,7 +47,7 @@
         if (fileInput.files && fileInput.files[0]) {
           var reader = new FileReader();
           reader.onload = function(e) {
-            document.getElementById('imagePreview').innerHTML = 'src="' + e.target.result + '"';
+            document.getElementById('imagePreview').innerHTML = '<img style="width:700px;height:400px;" src="' + e.target.result + '"/>';
           };
           reader.readAsDataURL(fileInput.files[0]);
         }
@@ -57,7 +57,7 @@
 </head>
 
 <body>
-  <?php $this->rendersection('content') ?>
+    <?php $this->rendersection('content') ?>
 
   <!-- Optional JavaScript -->
   <!-- jQuery first, then Popper.js, then Bootstrap JS -->

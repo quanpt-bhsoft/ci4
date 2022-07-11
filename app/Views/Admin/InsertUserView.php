@@ -42,7 +42,10 @@ $this->section('content');
     <div class="form-group">
       <label class="control-label col-sm-2" for="email">Status :</label>
       <div class="col-sm-10">
-        <input required="" type="" class="form-control" id="email" name="status" value="">
+        <select required="" type="" class="form-control" id="email" name="status" >
+          <option value="<?php echo 0 ?>">User</option>
+          <option value="<?php echo 1 ?>">Admin</option>
+        </select>
       </div>
     </div>
 

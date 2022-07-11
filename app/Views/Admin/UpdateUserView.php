@@ -43,7 +43,26 @@ $this->section('content');
       <div class="form-group">
          <label class="control-label col-sm-2" for="email">Status :</label>
          <div class="col-sm-10">
-            <input required="" type="" class="form-control" id="email" name="status" value="<?php echo $getuser['Status'] ?>">
+            <select name="status" required="" type="" class="form-control" id="email" name="status" >
+                  <option value="<?php echo $getuser['Status']?>">
+                     <?php if($getuser['Status'] == 1){
+                        echo 'Admin';
+                        } else {
+                           echo 'User';
+                        }
+                        ?>
+                  </option>
+                  <option value="<?php if($getuser['Status'] == 1){
+                        echo 0;
+                        } else {
+                           echo 1 ;
+                        } ?>"><?php if($getuser['Status'] == 1){
+                           echo 'User';
+                           } else {
+                              echo 'Admin' ;
+                           } ?>
+                  </option>
+            </select>
          </div>
       </div>
 </div>
