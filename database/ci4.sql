@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: 127.0.0.1
--- Thời gian đã tạo: Th6 30, 2022 lúc 11:00 AM
+-- Thời gian đã tạo: Th7 11, 2022 lúc 07:44 AM
 -- Phiên bản máy phục vụ: 10.4.24-MariaDB
 -- Phiên bản PHP: 7.4.29
 
@@ -41,7 +41,8 @@ CREATE TABLE `course` (
 --
 
 INSERT INTO `course` (`ID`, `Name`, `Price`, `Avatar`, `Title`, `Describe`) VALUES
-(2, 'PHP', 5000000, '1656575422_e1c42691ef8d1ec67f25.jpg', 'Lập Trình Web', 'Sử dụng thành thạo ngôn ngữ JavaScript và PHP để giải quyết bài toán về lập trình Làm chủ được các kỹ thuật lập trình Hướng đối tượng bằng JavaScript và PHP Sử dụng các cấu trúc dữ liệu phù hợp trong các tình huống thông dụng Hiểu và phát triển website tr');
+(2, 'PHP', 5000000, '1657099332_6c24961b30921fb45e99.jpg', 'Lập Trình Web', 'Sử dụng thành thạo ngôn ngữ JavaScript và PHP để giải quyết bài toán về lập trình Làm chủ được các kỹ thuật lập trình Hướng đối tượng bằng JavaScript và PHP Sử dụng các cấu trúc dữ liệu phù hợp trong các tình huống thông dụng Hiểu và phát triển website tr'),
+(13, 'C++', 5000000, '1657509625_f97e77b5abf052b09a12.jpg', 'f7gy3rfbgklmvlchy89udn', '1618gy3ifbevdffhuiv');
 
 -- --------------------------------------------------------
 
@@ -61,9 +62,10 @@ CREATE TABLE `lesson` (
 --
 
 INSERT INTO `lesson` (`ID`, `idcourse`, `Title`, `Content`) VALUES
-(1, 2, 'Lập Trình Web Android', 'Font Awesome 5 là một trong những icon font phổ biến nhất hiện nay, tại thời điểm viết bài 28/10/2020 với phiên bản 5.15.1 hỗ trợ trên 1600 icon miễn phí, rất dễ dàng để tích hợp vào website, công việc của bạn bây giờ là lựa chọn icon và copy paste. Font Awesome có bản miễn phí và bản trả phí, tuy nhiên bạn chỉ cần dùng bản miễn phí là đủ để làm đẹp cho website của mình.'),
-(2, 2, 'Lập Trình Android', 'Font Awesome 5 là một trong những icon font phổ biến nhất hiện nay, tại thời điểm viết bài 28/10/2020 với phiên bản 5.15.1 hỗ trợ trên 1600 icon miễn phí, rất dễ dàng để tích hợp vào website, công việc của bạn bây giờ là lựa chọn icon và copy paste. Font Awesome có bản miễn phí và bản trả phí, tuy nhiên bạn chỉ cần dùng bản miễn phí là đủ để làm đẹp cho website của mình.'),
-(5, 2, 'Lập Trình Game', 'Font Awesome 5 là một trong những icon font phổ biến nhất hiện nay, tại thời điểm viết bài 28/10/2020 với phiên bản 5.15.1 hỗ trợ trên 1600 icon miễn phí, rất dễ dàng để tích hợp vào website, công việc của bạn bây giờ là lựa chọn icon và copy paste. Font Awesome có bản miễn phí và bản trả phí, tuy nhiên bạn chỉ cần dùng bản miễn phí là đủ để làm đẹp cho website của mình.');
+(1, 2, 'Lập Trình Web', 'Font Awesome 5 là một trong những icon font phổ biến nhất hiện nay, tại thời điểm viết bài 28/10/2020 với phiên bản 5.15.1 hỗ trợ trên 1600 icon miễn phí, rất dễ dàng để tích hợp vào website, công việc của bạn bây giờ là lựa chọn icon và copy paste. Font Awesome có bản miễn phí và bản trả phí, tuy nhiên bạn chỉ cần dùng bản miễn phí là đủ để làm đẹp cho website của mình.'),
+(2, 2, 'Lập Trình IOS', 'Font Awesome 5 là một trong những icon font phổ biến nhất hiện nay, tại thời điểm viết bài 28/10/2020 với phiên bản 5.15.1 hỗ trợ trên 1600 icon miễn phí, rất dễ dàng để tích hợp vào website, công việc của bạn bây giờ là lựa chọn icon và copy paste. Font Awesome có bản miễn phí và bản trả phí, tuy nhiên bạn chỉ cần dùng bản miễn phí là đủ để làm đẹp cho website của mình.'),
+(6, 2, 'Lập Trình AI', 'CodeIgniter là bộ công cụ dành cho những người xây dựng ứng dụng web bằng PHP. Mục tiêu của nó là cho phép bạn phát triển các dự án nhanh hơn nhiều so với khả năng của bạn nếu bạn đang viết mã từ đầu, bằng cách cung cấp một bộ thư viện phong phú cho các tác vụ thường cần, cũng như giao diện đơn giản và cấu trúc logic để truy cập các thư viện này. CodeIgniter cho phép bạn tập trung sáng tạo vào dự án của mình bằng cách giảm thiểu số lượng mã cần thiết cho một nhiệm vụ nhất định.'),
+(7, 9, 'cbgdet6e34895rgtjibmkv cnbdgeyrf', 'frtfw7egyrfvinogk vlm,bgevtruifnkj');
 
 -- --------------------------------------------------------
 
@@ -84,8 +86,7 @@ CREATE TABLE `order` (
 
 INSERT INTO `order` (`ID`, `idcourse`, `iduser`, `status`) VALUES
 (3, 2, 7, 1),
-(4, 2, 1, 1),
-(6, 2, 7, 0);
+(6, 2, 7, 2);
 
 -- --------------------------------------------------------
 
@@ -107,9 +108,8 @@ CREATE TABLE `user` (
 --
 
 INSERT INTO `user` (`ID`, `Name`, `Email`, `Avatar`, `Password`, `Status`) VALUES
-(1, 'Phạm Thanh Quân', 'quanpt.bhsoft@gmail.com', '1656579614_608bf6b09acaf20eda83.jpg', 'e67c10a4c8fbfc0c400e047bb9a056a1', 1),
-(7, 'Nguyễn Hồng Ngọc', 'ngocnth.bhsoft@gmail.com', '1656578981_97e145fc3af3cefb2245.jpg', 'e67c10a4c8fbfc0c400e047bb9a056a1', 0),
-(9, 'phamthanhquan2411@gmail.com', 'phamthanhquan2411@gmail.com', '1656575410_235adf7b94868e3f7216.jpg', 'e67c10a4c8fbfc0c400e047bb9a056a1', 0);
+(1, 'Phạm Thanh Quân', 'quanpt.bhsoft@gmail.com', '1657100856_20ee33503ca48db27e3c.jpg', 'e67c10a4c8fbfc0c400e047bb9a056a1', 1),
+(7, 'Nguyễn Hồng Ngọc', 'ngocnth.bhsoft@gmail.com', '1657179343_af88ce96ede055739452.jpg', 'e67c10a4c8fbfc0c400e047bb9a056a1', 0);
 
 --
 -- Chỉ mục cho các bảng đã đổ
@@ -148,25 +148,25 @@ ALTER TABLE `user`
 -- AUTO_INCREMENT cho bảng `course`
 --
 ALTER TABLE `course`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT cho bảng `lesson`
 --
 ALTER TABLE `lesson`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT cho bảng `order`
 --
 ALTER TABLE `order`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT cho bảng `user`
 --
 ALTER TABLE `user`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
