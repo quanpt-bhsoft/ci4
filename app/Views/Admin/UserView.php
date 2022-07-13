@@ -2,7 +2,7 @@
 $this->section('content');
 ?>
 <!-- End of Topbar -->
-<?php if (isset($getuser)) { ?>
+<?php if (isset($getUser)) { ?>
     <!-- Begin Page Content -->
     <div style=" display: flex;flex-direction: column; align-items: center;">
         <div style="margin-top : 3%;margin-bottom:3%">
@@ -23,27 +23,34 @@ $this->section('content');
                     </tr>
                 </thead>
                 <tbody>
-                    <?php foreach ($getuser as $getuser) : ?>
+                    <?php foreach ($getUser as $getUser) : ?>
                         <tr>
-                            <td><?php echo $getuser['ID'] ?></td>
-                            <td><?php echo $getuser['Name'] ?></td>
-                            <td><?php echo $getuser['Email'] ?></td>
+                            <td><?php echo $getUser['ID'] ?></td>
+                            <td><?php echo $getUser['Name'] ?></td>
+                            <td><?php echo $getUser['Email'] ?></td>
                             <td>
                                 <?php $dem = 0;
-                                for ($i = 0; $i < (count($getuser) - 6); $i++) {
-                                    if (isset($getuser[$dem])) {
-                                        echo $getuser["$i"]; ?><br><?php
+                                for ($i = 0; $i < (count($getUser) - 6); $i++) {
+                                    if (isset($getUser[$dem])) {
+                                        echo $getUser["$i"]; ?><br><?php
                                                                 }
                                                             }
                                                                     ?>
                             </td>
-                            <td><img style="width:7em; height : 7em;" src="<?php echo "../uploads/" . $getuser['Avatar']; ?>" alt="Image"></td>
+                            <td><img style="width:7em; height : 7em;" src="<?php
+                            //echo strpos($getUser['Avatar'], 'https:')
+                            if(strpos($getUser['Avatar'], 'via') == 8){
+                                echo $getUser['Avatar'];
+                            } else {
+                                echo "../uploads/" . $getUser['Avatar']; 
+                            }?>" alt="Image">
+                            </td>
                             <td>
                                 <div style="display: flex; justify-content:space-between; width: 100px ;">
-                                    <a href="<?php echo site_url('update_user/' . $getuser['ID']); ?>">
+                                    <a href="<?php echo site_url('update_user/' . $getUser['ID']); ?>">
                                         <i class="fas fa-wrench"></i>
                                     </a>
-                                    <a href="<?php echo site_url('delete_user/' . $getuser['ID']); ?>" onclick="return confirm('Are you sure want to delete?');">
+                                    <a href="<?php echo site_url('delete_user/' . $getUser['ID']); ?>" onclick="return confirm('Are you sure want to delete?');">
                                         <i class="fas fa-trash-alt"></i>
                                     </a>
                                 </div>
@@ -52,11 +59,14 @@ $this->section('content');
                     <?php endforeach ?>
                 </tbody>
             </table>
-
+        
         </div>
         <!-- /.container-fluid -->
+        <div>
+            <?php echo $pager->links(); ?>
+        </div>
     </div>
-<?php } elseif (isset($get_course)) { ?>
+<?php } elseif (isset($getCourse)) { ?>
     <!-- course  -->
     <div style=" display: flex;flex-direction: column; align-items: center;">
         <div style="margin-top : 3%;margin-bottom:3%">
@@ -77,20 +87,25 @@ $this->section('content');
                     </tr>
                 </thead>
                 <tbody>
-                    <?php foreach ($get_course as $get_course) : ?>
+                    <?php foreach ($getCourse as $getCourse) : ?>
                         <tr>
-                            <td><?php echo $get_course['ID'] ?></td>
-                            <td><?php echo $get_course['Name'] ?></td>
-                            <td><?php echo $get_course['Price'] ?>VND</td>
-                            <td><img style="width:7em; height : 7em;" src="<?php echo "../uploads/" . $get_course['Avatar']; ?>" alt="Image"></td>
-                            <td><?php echo $get_course['Title'] ?></td>
-                            <td style="width :200px ; height: 200px;"><?php echo $get_course['Describe'] ?></td>
+                            <td><?php echo $getCourse['ID'] ?></td>
+                            <td><?php echo $getCourse['Name'] ?></td>
+                            <td><?php echo $getCourse['Price'] ?>VND</td>
+                            <td><img style="width:7em; height : 7em;" src="<?php     
+                            if(strpos($getCourse['Avatar'], 'via') == 8){
+                                echo $getCourse['Avatar'];
+                            } else {
+                                echo "../uploads/" . $getCourse['Avatar']; 
+                            }?>" alt="Image"></td>
+                            <td><?php echo $getCourse['Title'] ?></td>
+                            <td style="width :200px ; height: 200px;"><?php echo $getCourse['Describe'] ?></td>
                             <td>
                                 <div style="display: flex; justify-content:space-between; width: 100px ;">
-                                    <a href="<?php echo site_url('update_course/' . $get_course['ID']); ?>">
+                                    <a href="<?php echo site_url('update_course/' . $getCourse['ID']); ?>">
                                         <i class="fas fa-wrench"></i>
                                     </a>
-                                    <a href="<?php echo site_url('delete_course/' . $get_course['ID']); ?>" onclick="return confirm('Are you sure want to delete?');">
+                                    <a href="<?php echo site_url('delete_course/' . $getCourse['ID']); ?>" onclick="return confirm('Are you sure want to delete?');">
                                         <i class="fas fa-trash-alt"></i>
                                     </a>
                                 </div>
@@ -101,9 +116,12 @@ $this->section('content');
             </table>
 
         </div>
+        <div>
+            <?php echo $pager->links(); ?>
+        </div>
         <!-- /.container-fluid -->
     </div>
-<?php } elseif (isset($get_lesson)) { ?>
+<?php } elseif (isset($getLesson)) { ?>
     <!-- course  -->
     <div style=" display: flex;flex-direction: column; align-items: center;">
         <div style="margin-top : 3%;margin-bottom:3%">
@@ -122,18 +140,18 @@ $this->section('content');
                     </tr>
                 </thead>
                 <tbody>
-                    <?php foreach ($get_lesson as $get_lesson) : ?>
+                    <?php foreach ($getLesson as $getLesson) : ?>
                         <tr>
-                            <td><?php echo $get_lesson['ID'] ?></td>
-                            <td><?php echo $get_lesson['Title'] ?></td>
-                            <td><?php echo $get_lesson['Content'] ?></td>
-                            <td><?php echo $get_lesson['Name'] ?></td>
+                            <td><?php echo $getLesson['ID'] ?></td>
+                            <td><?php echo $getLesson['Title'] ?></td>
+                            <td><?php echo $getLesson['Content'] ?></td>
+                            <td><?php echo $getLesson['Name'] ?></td>
                             <td>
                                 <div style="display: flex; justify-content:space-between; width: 100px ;">
-                                    <a href="<?php echo site_url('update_lesson/' . $get_lesson['ID']); ?>">
+                                    <a href="<?php echo site_url('update_lesson/' . $getLesson['ID']); ?>">
                                         <i class="fas fa-wrench"></i>
                                     </a>
-                                    <a href="<?php echo site_url('delete_lesson/' . $get_lesson['ID']); ?>" onclick="return confirm('Are you sure want to delete?');">
+                                    <a href="<?php echo site_url('delete_lesson/' . $getLesson['ID']); ?>" onclick="return confirm('Are you sure want to delete?');">
                                         <i class="fas fa-trash-alt"></i>
                                     </a>
                                 </div>
@@ -142,10 +160,14 @@ $this->section('content');
                     <?php endforeach ?>
                 </tbody>
             </table>
-
+            
         </div>
         <!-- /.container-fluid -->
+    <div>
+        <?php echo $pager->links(); ?>
     </div>
+    </div>
+   
 <?php } else { ?>
     <div style=" display: flex;flex-direction: column; align-items: center;">
         <div style="margin-top : 3%;margin-bottom:3%">
@@ -153,7 +175,7 @@ $this->section('content');
         </div>
         <div class="xem">
             <div class="quanLyTin" id="quanLyTin">
-                <div class="quanLy_item active" id="inProgress" onclick="change1()">
+                <div class="quanLy_item actived" id="inProgress" onclick="change1()">
                     <p>Đợi Xét Duyệt</p>
                 </div>
                 <div class="quanLy_item" id="cancel" onclick="change2()">
@@ -175,16 +197,16 @@ $this->section('content');
                         </tr>
                     </thead>
                     <tbody>
-                        <?php foreach ($get_order_new as $get_order_new) : ?>
+                        <?php foreach ($getOrderNew as $getOrderNew) : ?>
                             <tr>
-                                <td><?php echo $get_order_new['iduser'] ?></td>
-                                <td><?php echo $get_order_new['username'] ?></td>
-                                <td><?php echo $get_order_new['Name'] ?></td>
+                                <td><?php echo $getOrderNew['iduser'] ?></td>
+                                <td><?php echo $getOrderNew['username'] ?></td>
+                                <td><?php echo $getOrderNew['Name'] ?></td>
                                 <td>
                                     <div style="display: flex; justify-content:space-between; width: 100px ;">
                                         <div class="check">
-                                            <button class="accept"><a onclick="return confirm('Are you sure want to accept?');" href="accept_order/<?php echo $get_order_new['ID'] ?>">Duyệt</a></button>
-                                            <button type="submit" class="refuse"><a onclick="return confirm('Are you sure want to deny?');" href="deny_order/<?php echo $get_order_new['ID'] ?>">Từ chối</a></button>
+                                            <button class="accept"><a onclick="return confirm('Are you sure want to accept?');" href="accept_order/<?php echo $getOrderNew['ID'] ?>">Duyệt</a></button>
+                                            <button type="submit" class="refuse"><a onclick="return confirm('Are you sure want to deny?');" href="deny_order/<?php echo $getOrderNew['ID'] ?>">Từ chối</a></button>
                                         </div>
                                     </div>
                                 </td>
@@ -192,6 +214,9 @@ $this->section('content');
                         <?php endforeach ?>
                     </tbody>
                 </table>
+                <div>
+                    <?php echo $pagerNew->links(); ?>
+                </div>
             </div>
             <div id="listCancel">
                 <table class="table ha">
@@ -204,11 +229,11 @@ $this->section('content');
                         </tr>
                     </thead>
                     <tbody>
-                        <?php foreach ($get_order_deny as $get_order_deny) : ?>
+                        <?php foreach ($getOrderDeny as $getOrderDeny) : ?>
                             <tr>
-                                <td><?php echo $get_order_deny['iduser'] ?></td>
-                                <td><?php echo $get_order_deny['username'] ?></td>
-                                <td><?php echo $get_order_deny['Name'] ?></td>
+                                <td><?php echo $getOrderDeny['iduser'] ?></td>
+                                <td><?php echo $getOrderDeny['username'] ?></td>
+                                <td><?php echo $getOrderDeny['Name'] ?></td>
                                 <td>
                                     <div style="display: flex; justify-content:space-between; width: 100px ;">
                                         <div class="check">
@@ -220,6 +245,9 @@ $this->section('content');
                         <?php endforeach ?>
                     </tbody>
                 </table>
+                <div>
+                    <?php echo $pagerDeny->links(); ?>
+                </div>
             </div>
             <div id="listDone">
                 <table class="table ha">
@@ -232,11 +260,11 @@ $this->section('content');
                         </tr>
                     </thead>
                     <tbody>
-                        <?php foreach ($get_order_accept as $get_order_accept) : ?>
+                        <?php foreach ($getOrderAccept as $getOrderAccept) : ?>
                             <tr>
-                                <td><?php echo $get_order_accept['iduser'] ?></td>
-                                <td><?php echo $get_order_accept['username'] ?></td>
-                                <td><?php echo $get_order_accept['Name'] ?></td>
+                                <td><?php echo $getOrderAccept['iduser'] ?></td>
+                                <td><?php echo $getOrderAccept['username'] ?></td>
+                                <td><?php echo $getOrderAccept['Name'] ?></td>
                                 <td>
                                     <div style="display: flex; justify-content:space-between; width: 100px ;">
                                         <div class="check">
@@ -248,8 +276,10 @@ $this->section('content');
                         <?php endforeach ?>
                     </tbody>
                 </table>
+                <div>
+                    <?php echo $pagerAccept->links(); ?>
+                </div>
             </div>
-
         </div>
         <!-- /.container-fluid -->
     </div>

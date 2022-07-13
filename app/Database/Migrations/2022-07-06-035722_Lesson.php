@@ -25,7 +25,7 @@ class Lesson extends Migration
             ],
         ]);
         $this->forge->addKey('ID', True);
-        $this->forge->addForeignKey('idcourse', 'course', 'ID', 'CASECASE', 'CASECADE');
+        $this->forge->addForeignKey('idcourse', 'course', 'ID', 'CASCADE', 'CASCADE');
         $this->forge->createTable('lesson');
     }
 

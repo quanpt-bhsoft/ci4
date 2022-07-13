@@ -36,52 +36,50 @@ $routes->set404Override();
 // We get a performance increase by specifying the default
 // route since we don't have to scan directories.
 //user
-$routes->resource('UserControl');
-$routes->get('/', 'User::user');
+$routes->resource('UserController');
+$routes->get('/', 'UserHomeController::user');
 
-$routes->get('login', 'UserControl::login');
-$routes->post('check_login', 'UserControl::checkLogin');
+$routes->get('login', 'UserController::login');
+$routes->post('check_login', 'UserController::checkLogin');
 
-$routes->get('detail_course/(:segment)', 'User::detailCourse/$1');
+$routes->get('detail_course/(:segment)', 'UserHomeController::detailCourse/$1');
 //cart
-$routes->get('cart', 'User::cart');
-$routes->get('add_cart/(:segment)', 'User::addCart/$1');
-$routes->get('delete_cart/(:segment)', 'User::deleteCart/$1');
+$routes->get('cart', 'UserHomeController::cart');
+$routes->get('add_cart/(:segment)', 'UserHomeController::addCart/$1');
+$routes->get('delete_cart/(:segment)', 'UserHomeController::deleteCart/$1');
 
 $routes->group('', ['filter' => 'isLoggedInAdmin'], function ($routes) {
-    $routes->get('showUser', 'UserControl::showUser');
-    $routes->get('showCourse', 'CourseControl::showCourse');
+    $routes->get('showUser', 'UserController::showUser');
+    $routes->get('showCourse', 'CourseController::showCourse');
     //user
-    $routes->get('delete_user/(:segment)', 'UserControl::deleteUser/$1');
-    $routes->match(['get', 'post'], 'insert_user', 'UserControl::insertUser');
-    $routes->get('show_insert_user', 'UserControl::ShowInsertUser');
-    $routes->get('upload', 'Upload::index');
-    $routes->post('upload1', 'Upload::upload');
-    $routes->match(['get', 'post'], 'update_user/(:segment)', 'UserControl::updateUser/$1');
+    $routes->get('delete_user/(:segment)', 'UserController::deleteUser/$1');
+    $routes->match(['get', 'post'], 'insert_user', 'UserController::insertUser');
+    $routes->get('show_insert_user', 'UserController::ShowInsertUser');
+    $routes->match(['get', 'post'], 'update_user/(:segment)', 'UserController::updateUser/$1');
 
     //course 
 
-    $routes->get('delete_course/(:segment)', 'CourseControl::deleteCourse/$1');
-    $routes->get('show_insert_course', 'CourseControl::showInsertCourse');
-    $routes->match(['get', 'post'], 'insert_course', 'CourseControl::insertCourse');
-    $routes->match(['get', 'post'], 'update_course/(:segment)', 'CourseControl::updateCourse/$1');
+    $routes->get('delete_course/(:segment)', 'CourseController::deleteCourse/$1');
+    $routes->get('show_insert_course', 'CourseController::showInsertCourse');
+    $routes->match(['get', 'post'], 'insert_course', 'CourseController::insertCourse');
+    $routes->match(['get', 'post'], 'update_course/(:segment)', 'CourseController::updateCourse/$1');
     //order
-    $routes->get('showOrder', 'OrderControl::showOrder');
-    $routes->get('accept_order/(:segment)', 'OrderControl::acceptOrder/$1');
-    $routes->get('deny_order/(:segment)', 'OrderControl::denyOrder/$1');
+    $routes->get('showOrder', 'OrderController::showOrder');
+    $routes->get('accept_order/(:segment)', 'OrderController::acceptOrder/$1');
+    $routes->get('deny_order/(:segment)', 'OrderController::denyOrder/$1');
     //lesson
-    $routes->get('showLesson', 'LessonControl::showLesson');
-    $routes->get('delete_lesson/(:segment)', 'LessonControl::deleteLesson/$1');
-    $routes->match(['get', 'post'], 'update_lesson/(:segment)', 'LessonControl::updateLesson/$1');
-    $routes->match(['get', 'post'], 'insert_lesson', 'LessonControl::insertLesson');
+    $routes->get('showLesson', 'LessonController::showLesson');
+    $routes->get('delete_lesson/(:segment)', 'LessonController::deleteLesson/$1');
+    $routes->match(['get', 'post'], 'update_lesson/(:segment)', 'LessonController::updateLesson/$1');
+    $routes->match(['get', 'post'], 'insert_lesson', 'LessonController::insertLesson');
 });
 $routes->group('', ['filter' => 'isLoggedIn'], function ($routes) {
-    $routes->get('add_order/(:segment)', 'User::addOrder/$1');
-    $routes->get('history_order/(:segment)', 'User::historyOrder/$1');
-    $routes->match(['get', 'post'], 'update_user1/(:segment)', 'User::updateUser/$1');
+    $routes->get('add_order/(:segment)', 'UserHomeController::addOrder/$1');
+    $routes->get('history_order/(:segment)', 'UserHomeController::historyOrder/$1');
+    $routes->match(['get', 'post'], 'update_user1/(:segment)', 'UserHomeController::updateUser/$1');
 });
-$routes->get('logout', 'UserControl::logout');
-$routes->get('logout1', 'User::logout');
+$routes->get('logout', 'UserController::logout');
+$routes->get('logout1', 'UserHomeController::logout');
 
 /*
  * --------------------------------------------------------------------

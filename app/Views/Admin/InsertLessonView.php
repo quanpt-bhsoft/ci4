@@ -20,8 +20,8 @@ $this->section('content');
       <label class="control-label col-sm-2" for="email">Course :</label>
       <div class="col-sm-10">
         <select name="course">
-          <?php foreach ($get_course as $get_course) : ?>
-            <option value="<?php echo $get_course['ID'] ?>"><?php echo $get_course['Name'] ?></option>
+          <?php foreach ($getCourse as $getCourse) : ?>
+            <option value="<?php echo $getCourse['ID'] ?>"><?php echo $getCourse['Name'] ?></option>
           <?php endforeach ?>
         </select>
       </div>

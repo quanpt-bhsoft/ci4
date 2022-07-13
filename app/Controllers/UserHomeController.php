@@ -5,36 +5,37 @@ namespace App\Controllers;
 use App\Models\CourseModel;
 use App\Models\LessonModel;
 use App\Models\OrderModel;
+use App\Models\UserModel;
 use CodeIgniter\Files\File;
 
 $this->session = \Config\Services::session();
 
-class User extends BaseController
+class UserHomeController extends BaseController
 {
     public function user()
     {
-        $model = model(CourseModel::class);
+        $model = new CourseModel();
 
-        $get_course = $model->getCourse(null);
+        $getCourse = $model->getCourse(null, 6);
 
-        $orderModel = model(OrderModel::class);
+        $orderModel = new OrderModel;
         if (isset($_SESSION['user'])) {
-            for ($i = 0; $i < count($get_course); $i++) {
+            for ($i = 0; $i < count($getCourse); $i++) {
                 $course = $orderModel->selectCount('id')
                     ->where('iduser', $_SESSION['user']['ID'])
-                    ->where('idcourse', $get_course[$i]['ID'])
+                    ->where('idcourse', $getCourse[$i]['ID'])
                     ->where('status', 2)
-                    ->findAll();
-                foreach ($course as $course) :
-                    if ($course['id'] == 0) {
-                        array_push($get_course[$i], 0);
-                    } else {
-                        array_push($get_course[$i], 1);
-                    }
-                endforeach;
+                    ->first();
+                if ($course['id'] == 0) {
+                    array_push($getCourse[$i], 0);
+                } else {
+                    array_push($getCourse[$i], 1);
+                }
             }
         }
-        $data['get_course'] = $get_course;
+        $data['getCourse'] = $getCourse;
+        $data['pager'] = $model->pager;
+        //var_dump( $data['get_course'][0]);
         return view('home', $data);
     }
     public function updateUser($id)
@@ -56,37 +57,38 @@ class User extends BaseController
                 ],
             ];
             $img = $this->request->getFile('avatar');
-            $model = model(UserModel::class);
-            $get_avatar = $model->getUser($id);
+            $model = new UserModel();
+            $getAvatar = $model->getUser($id);
             if ($img != "") {
                 if (!$img->hasMoved()) {
                     $filepath = $img->getRandomName();
                     $img->move('uploads/', $filepath);
                 }
-                unlink("uploads/" . $get_avatar[0]['Avatar']);
+                unlink("uploads/" . $getAvatar[0]['Avatar']);
             } else {
-                $filepath = $get_avatar[0]['Avatar'];
+                $filepath = $getAvatar[0]['Avatar'];
             }
-            if ($get_avatar[0]['Password'] == $pass) {
+            if ($getAvatar[0]['Password'] == $pass) {
                 $model->updateUser($id, $name, $email, $pass, $filepath, 0);
             } else {
                 $model->updateUser($id, $name, $email, md5($pass), $filepath, 0);
             }
             return redirect()->to('/');
         } else {
-            $model = model(UserModel::class);
-            $data['get_user'] = $model->getUser($id);
+            $model = new UserModel();
+            $data['getUser'] = $model->getUser($id);
             return view('User/Home', $data);
         }
     }
     public function detailCourse($id)
     {
-        $model = model(CourseModel::class);
-        $get_course = $model->getCourse($id);
+        $model =new CourseModel();
+        $getCourse = $model->getCourse($id, 1);
         //var_dump($get_course);
-        $orderlesson = new LessonModel();
 
-        $data['get_lesson'] = $orderlesson->join('course', 'course.ID = lesson.idcourse')
+        $orderLesson = new LessonModel();
+
+        $data['getLesson'] = $orderLesson->join('course', 'course.ID = lesson.idcourse')
             ->select('lesson.Title,lesson.Content')
             ->where('idcourse', $id)
             ->findAll();
@@ -94,13 +96,11 @@ class User extends BaseController
             $orderModel  = new OrderModel();
             $data['check'] = $orderModel->selectCount('id')
                 ->where('iduser', $_SESSION['user']['ID'])
-                ->where('idcourse', $get_course['ID'])
+                ->where('idcourse', $getCourse['ID'])
                 ->where('status', 2)
-                ->findAll();
+                ->first();
         }
-
-        //var_dump($data['check']);
-        $data['get_course'] = $get_course;
+        $data['getCourse'] = $getCourse;
         return view('User/detailCourse', $data);
     }
     public function cart()
@@ -112,16 +112,16 @@ class User extends BaseController
     }
     public function addCart($id)
     {
-        $model = model(CourseModel::class);
-        $get_course = $model->getCourse($id);
+        $model = new CourseModel();
+        $getCourse = $model->getCourse($id, 1);
 
         if (count($_SESSION['cart']) == 0) {
-            array_push($_SESSION['cart'], $get_course);
+            array_push($_SESSION['cart'], $getCourse);
             return redirect()->to('cart');
         } else {
             for ($i = 0; $i < count($_SESSION['cart']); $i++) {
                 if ($_SESSION['cart'][$i]['ID'] != $id) {
-                    array_push($_SESSION['cart'], $get_course[0]);
+                    array_push($_SESSION['cart'], $getCourse);
                     return redirect()->to('cart');
                 } else {
                     echo 'The course is already in your cart';
@@ -138,41 +138,37 @@ class User extends BaseController
         }
         return redirect()->to('cart');
     }
-    public function addOrder($idcourse)
+    public function addOrder($idCourse)
     {
-        if (isset($_SESSION['user'])) {
-            if (count($_SESSION['cart']) != 0) {
-                $model = new OrderModel;
-                $check_order = $model->selectCount('ID')
-                    ->where('iduser', $_SESSION['user']['ID'])
-                    ->where('idcourse', $idcourse)
-                    ->where('status', 0)
-                    ->findAll();
-                if (isset($check_order) && $check_order[0]['ID'] == 0) {
-                    $data = [
-                        'idcourse' => $idcourse,
-                        'iduser' => $_SESSION['user']['ID'],
-                        'status' => 0
-                    ];
-                    $model->insert($data);
-                    return redirect()->to('delete_cart/' . $idcourse);
-                } else {
-                    return redirect()->to('delete_cart/' . $idcourse);
-                }
+        if (count($_SESSION['cart']) != 0) {
+            $model = new OrderModel;
+            $checkOrder = $model->selectCount('ID')
+                ->where('iduser', $_SESSION['user']['ID'])
+                ->where('idcourse', $idCourse)
+                ->where('status', 0)
+                ->first();
+            if (isset($checkOrder) && $checkOrder['ID'] == 0) {
+                $data = [
+                    'idcourse' => $idCourse,
+                    'iduser' => $_SESSION['user']['ID'],
+                    'status' => 0
+                ];
+                $model->insert($data);
+                return redirect()->to('delete_cart/' . $idCourse);
+            } else {
+                return redirect()->to('delete_cart/' . $idCourse);
             }
-        } else {
-            return redirect()->to('login');
         }
     }
     public function historyOrder($iduser)
     {
         $model = new OrderModel;
-        $data['get_order'] = $model->join('course', 'course.ID = `order`.idcourse')
+        $data['getOrder'] = $model->join('course', 'course.ID = `order`.idcourse')
             ->select('course.Name,course.Avatar,course.Title,course.Title,course.Price')
             ->select('`order`.status')
             ->where('`order`.iduser', $iduser)
-            ->findAll();
-
+            ->paginate(2);
+        $data['pagerHistory'] = $model->pager;
         return view('User/historyOrder', $data);
     }
     public function logout()

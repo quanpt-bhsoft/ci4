@@ -19,6 +19,6 @@ class OrderModel extends Model
                 ->select('`order`.ID,`order`.iduser')
                 ->select('course.Name')
                 ->where('`order`.status', $check)
-                ->findAll();
+                ->paginate(2);
     }
 }

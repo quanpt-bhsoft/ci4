@@ -12,19 +12,19 @@ $this->section('content');
       <div class="form-group">
          <label class="control-label col-sm-2" for="email">ID :</label>
          <div class="col-sm-10">
-            <input readonly type="text" class="form-control" id="email" name="id" value="<?php echo $get_lesson[0]['ID'] ?>">
+            <input readonly type="text" class="form-control" id="email" name="id" value="<?php echo $getLesson[0]['ID'] ?>">
          </div>
       </div>
       <div class="form-group">
          <label class="control-label col-sm-2" for="email">Title :</label>
          <div class="col-sm-10">
-            <input type="text" class="form-control" id="email" name="title" value="<?php echo $get_lesson[0]['Title'] ?>">
+            <input type="text" class="form-control" id="email" name="title" value="<?php echo $getLesson[0]['Title'] ?>">
          </div>
       </div>
       <div class="form-group">
          <label class="control-label col-sm-2" for="email">Content :</label>
          <div class="col-sm-10">
-            <input type="text" class="form-control" id="email" name="content" value="<?php echo $get_lesson[0]['Content'] ?>">
+            <input type="text" class="form-control" id="email" name="content" value="<?php echo $getLesson[0]['Content'] ?>">
          </div>
       </div>
       <div class="form-group">

@@ -14,7 +14,7 @@ class UserModel extends Model
     public function getUser($email)
     {
         if ($email == null) {
-            return $this->findAll();
+            return $this->paginate(2);
         }
         $where = "Email = '".$email."' OR ID ='".$email."'";
         return $this->where($where)->first();
@@ -27,10 +27,6 @@ class UserModel extends Model
     public function deleteUser($id)
     {
         $this->delete(['ID' => $id]);
-        $db      = \Config\Database::connect();
-        $builder = $db->table('order');
-        $builder->delete(['id' => $id]);
-        
     }
     public function insertUser($data)
     {

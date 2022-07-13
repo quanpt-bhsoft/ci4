@@ -8,22 +8,27 @@ $this->section('detail'); ?>
         <div class="hi">
             <div class="h1">
                 <h4>Name : </h4>
-                <h4><?php echo $get_course['Name'] ?></h4>
+                <h4><?php echo $getCourse['Name'] ?></h4>
             </div>
             <div class="h1">
                 <h4>Price : </h4>
-                <h4><?php echo $get_course['Price'] ?></h4>
+                <h4><?php echo $getCourse['Price'] ?></h4>
             </div>
             <div class="h1">
                 <h4>Title : </h4>
-                <h4><?php echo $get_course['Title'] ?></h4>
+                <h4><?php echo $getCourse['Title'] ?></h4>
             </div>
             <div class="h1">
                 <h4>Describe : </h4>
-                <h4><?php echo $get_course['Describe'] ?></h4>
+                <h4><?php echo $getCourse['Describe'] ?></h4>
             </div>
             <div class="h2">
-                <img class="img-profile rounded-circle" src="/uploads/<?php echo $get_course['Avatar'] ?>" alt="Image">
+                <img class="img-profile rounded-circle" src="<?php
+                                                                if (strpos($getCourse['Avatar'], 'via') == 8) {
+                                                                    echo $getCourse['Avatar'];
+                                                                } else {
+                                                                    echo "/uploads/" . $getCourse['Avatar'];
+                                                                } ?>" alt="Image">
             </div>
         </div>
     </div>
@@ -32,15 +37,15 @@ $this->section('detail'); ?>
             <h2>LESSON</h2>
         </div>
         <div class="ca22">
-            <?php foreach ($get_lesson as $get_lesson) : ?>
+            <?php foreach ($getLesson as $getLesson) : ?>
                 <div class="h1">
                     <h4>Title : </h4>
-                    <h4><?php echo $get_lesson['Title'] ?></h4>
+                    <h4><?php echo $getLesson['Title'] ?></h4>
                 </div>
-                <?php if (isset($check[0]['id']) && $check[0]['id'] == 1) {  ?>
+                <?php if (isset($check['id']) && $check['id'] == 1) {  ?>
                     <div class="h1">
                         <h4>Content : </h4>
-                        <h4><?php echo $get_lesson['Content'] ?></h4>
+                        <h4><?php echo $getLesson['Content'] ?></h4>
                     </div>
                 <?php } ?>
             <?php endforeach ?>

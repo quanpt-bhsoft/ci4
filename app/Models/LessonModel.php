@@ -18,12 +18,12 @@ class LessonModel extends Model
             return $this->join('course','course.ID = lesson.idcourse')
                 ->select('lesson.ID,lesson.Title,lesson.Content')
                 ->select('course.Name')
-                ->where('lesson.ID',$id)
+                ->where('lesson.ID',$id) 
                 ->findAll();
         }
         return $this->join('course','course.ID = lesson.idcourse')
         ->select('lesson.ID,lesson.Title,lesson.Content')
         ->select('course.Name')
-        ->findAll();
+        ->paginate(2);
     }
 }

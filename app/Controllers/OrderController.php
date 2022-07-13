@@ -7,14 +7,17 @@ use CodeIgniter\Files\File;
 
 $this->session = \Config\Services::session();
 
-class OrderControl extends BaseController
+class OrderController extends BaseController
 {
     public function showOrder()
     {
-        $model = model(OrderModel::class);
-        $data['get_order_new'] = $model->getOrder(0);
-        $data['get_order_deny'] = $model->getOrder(1);
-        $data['get_order_accept'] = $model->getOrder(2);
+        $model = new OrderModel();
+        $data['getOrderNew'] = $model->getOrder(0);
+        $data['pagerNew'] = $model->pager;
+        $data['getOrderDeny'] = $model->getOrder(1);
+        $data['pagerDeny'] = $model->pager;
+        $data['getOrderAccept'] = $model->getOrder(2);
+        $data['pagerAccept'] = $model->pager;
         //var_dump($data['get_order_new']);
         return view('Admin/UserView', $data);
     }

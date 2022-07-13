@@ -24,8 +24,8 @@ class Order extends Migration
             ],
         ]);
         $this->forge->addKey('ID', True);
-        $this->forge->addForeignKey('iduser', 'user', 'ID', 'CASECADE', 'CASECADE');
-        $this->forge->addForeignKey('idcourse', 'course', 'ID', 'CASECASE', 'CASECADE');
+        $this->forge->addForeignKey('iduser', 'user', 'ID', 'CASCADE', 'CASCADE');
+        $this->forge->addForeignKey('idcourse', 'course', 'ID', 'CASCADE', 'CASCADE');
         $this->forge->createTable('order');
     }
     public function down()

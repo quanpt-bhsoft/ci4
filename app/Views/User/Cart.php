@@ -15,7 +15,15 @@ $this->section('cart'); ?>
             ?>
                     <div class="row border-top ">
                         <div class="row main align-items-center">
-                            <div class="col-4"><img style="width:200px !important ; height :auto !important;" src="/uploads/<?php echo $_SESSION['cart'][$i]['Avatar'] ?>"></div>
+                            <div class="col-4">
+                                <img style="width:200px !important ; height :auto !important;" src="<?php
+                                                                                                    if (strpos($_SESSION['cart'][$i]['Avatar'], 'via') == 8) {
+                                                                                                        echo $_SESSION['cart'][$i]['Avatar'];
+                                                                                                    } else {
+                                                                                                        echo "/uploads/" . $_SESSION['cart'][$i]['Avatar'];
+                                                                                                    }
+                                                                                                    ?>">
+                            </div>
                             <div class="col-2">
                                 <div class="row text-muted"><?php echo $_SESSION['cart'][$i]['Name'] ?></div>
                                 <div class="row"><?php echo $_SESSION['cart'][$i]['Title'] ?></div>

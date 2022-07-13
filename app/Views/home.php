@@ -89,34 +89,41 @@ $this->section('Home');
             </div>
         </div>
         <div class="row">
-            <?php foreach ($get_course as $get_course) : ?>
+            <?php foreach ($getCourse as $getCourse) : ?>
                 <div class="col-lg-4">
                     <div class="properties properties2 mb-30">
                         <div class="properties__card">
                             <div class="properties__img overlay1">
-                                <a href="detail_course/<?php echo $get_course['ID'] ?>"><img src="<?php echo "../uploads/" . $get_course['Avatar']; ?>" alt=""></a>
+                                <a href="detail_course/<?php echo $getCourse['ID'] ?>">
+                                    <img src="<?php
+                                                if (strpos($getCourse['Avatar'], 'via') == 8) {
+                                                    echo $getCourse['Avatar'];
+                                                } else {
+                                                    echo "../uploads/" . $getCourse['Avatar'];
+                                                } ?>" alt="">
+                                </a>
                             </div>
                             <div class="properties__caption">
-                                <h3><a href="detail_course/<?php echo $get_course['ID'] ?>"><?php echo $get_course['Name'] ?></a></h3>
-                                <p><?php echo $get_course['Title']  ?>
+                                <h3><a href="detail_course/<?php echo $getCourse['ID'] ?>"><?php echo $getCourse['Name'] ?></a></h3>
+                                <p><?php echo $getCourse['Title']  ?>
                                 </p>
                                 <div class="properties__footer d-flex justify-content-between align-items-center">
                                     <div class="price">
-                                        <span><?php echo $get_course['Price'] ?>VND</span>
+                                        <span><?php echo $getCourse['Price'] ?>VND</span>
                                     </div>
                                 </div>
                                 <div style="display:flex">
-                                    <?php if (isset($get_course['0']) && $get_course['0'] == 1) {
+                                    <?php if (isset($getCourse['0']) && $getCourse['0'] == 1) {
                                     ?>
                                         <a href="#" class="border-btn"><span>Already Paid</span></a>
                                     <?php
                                     } else {
                                     ?>
-                                        <a href="add_cart/<?php echo $get_course['ID'] ?>" class="border-btn"><i class="fas fa-shopping-cart"></i></a>
+                                        <a href="add_cart/<?php echo $getCourse['ID'] ?>" class="border-btn"><i class="fas fa-shopping-cart"></i></a>
                                     <?php
                                     }
                                     ?>
-                                    <a href="detail_course/<?php echo $get_course['ID'] ?>" class="border-btn ">Find out more</a>
+                                    <a href="detail_course/<?php echo $getCourse['ID'] ?>" class="border-btn ">Find out more</a>
                                 </div>
                             </div>
                         </div>
@@ -124,6 +131,7 @@ $this->section('Home');
                 </div>
             <?php endforeach ?>
         </div>
+        <?php echo $pager->links(); ?>
     </div>
 </div>
 <!-- Courses area End -->

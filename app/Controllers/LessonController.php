@@ -7,12 +7,13 @@ use CodeIgniter\Files\File;
 
 $this->session = \Config\Services::session();
 
-class LessonControl extends BaseController
+class LessonController extends BaseController
 {
     public function showLesson()
     {
-        $model = model(LessonModel::class);
-        $data['get_lesson'] = $model->getLesson(null);
+        $model = new LessonModel;
+        $data['getLesson'] = $model->getLesson(null);
+        $data['pager'] = $model->pager;
         return view('Admin/UserView', $data);
     }
     public function deleteLesson($id)
@@ -23,27 +24,27 @@ class LessonControl extends BaseController
     }
     public function updateLesson($id)
     {
-        $model = model(LessonModel::class);
+        $model = new LessonModel();
         if ($this->request->getMethod() == 'post') {
             $rules = [
                 'title' => 'required',
                 'content' => 'required',
             ];
-            $idlesson = $this->request->getPost('id');
+            $idLesson = $this->request->getPost('id');
             if ($this->validate($rules)) {
                 $data = [
                     'Title' => $this->request->getPost('title'),
                     'Çontent' => $this->request->getPost('content'),
                 ];
-                $model->update($idlesson, $data);
+                $model->update($idLesson, $data);
                 return redirect()->to('showLesson');
             } else {
                 $data['validation'] = $this->validator;
-                $data['get_lesson'] = $model->getLesson($idlesson);
+                $data['getLesson'] = $model->getLesson($idLesson);
                 return view('Admin/UpdateLessonView', $data);
             }
         } else {
-            $data['get_lesson'] = $model->getLesson($id);
+            $data['getLesson'] = $model->getLesson($id);
             return view('Admin/UpdateLessonView', $data);
         }
     }
@@ -69,7 +70,7 @@ class LessonControl extends BaseController
             }
         } else {
             $CourseModel = model(CourseModel::class);
-            $data['get_course'] = $CourseModel->getCourse(null);
+            $data['getCourse'] = $CourseModel->getCourse(null,null);
             return view('Admin/InsertLessonView', $data);
         }
     }

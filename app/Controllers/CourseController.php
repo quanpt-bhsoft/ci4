@@ -9,25 +9,24 @@ use CodeIgniter\Files\File;
 
 $this->session = \Config\Services::session();
 
-class CourseControl extends BaseController
+class CourseController extends BaseController
 {
     public function showCourse($id = null)
     {
-        $model = model(CourseModel::class);
-        $get_course = $model->getCourse($id);
-        $data['get_course'] = $get_course;
+        $model = new CourseModel();
+        $getCourse = $model->getCourse($id, 2);
+        $data['getCourse'] = $getCourse;
+        $data['pager'] = $model->pager;
         return view('Admin/UserView', $data);
     }
     public function deleteCourse($id)
     {
         $model = model(CourseModel::class);
-        $get_course = $model->getCourse($id);
-        unlink("uploads/" . $get_course['Avatar']);
+        $getCourse = $model->getCourse($id, 1);
+        if (strpos($getCourse['Avatar'], 'via') != 8) {
+            unlink("uploads/" . $getCourse['Avatar']);
+        }
         $model->delete(['ID' => $id]);
-        $modelorder = new OrderModel();
-        $modelorder->delete(['idcourse' => $id]);
-        $modellesson = new LessonModel();
-        $modellesson->delete(['idcourse' => $id]);
         return redirect()->to('showCourse');
     }
     public function showInsertCourse()
@@ -65,14 +64,14 @@ class CourseControl extends BaseController
 
             $img = $this->request->getFile('userfile');
             if (!$img->hasMoved()) {
-                $filepath = $img->getRandomName();
-                $img->move('uploads/', $filepath);
+                $filePath = $img->getRandomName();
+                $img->move('uploads/', $filePath);
             }
             //echo $filepath;
             $data = [
                 'Name' => $this->request->getPost('name'),
                 'Price' => $this->request->getPost('price'),
-                'Avatar' => $filepath,
+                'Avatar' => $filePath,
                 'Title' => $this->request->getPost('title'),
                 'Describe' => $this->request->getPost('describe'),
             ];
@@ -112,34 +111,36 @@ class CourseControl extends BaseController
                 'title' => 'required',
                 'describe' => 'required',
             ];
-            $idcourse = $this->request->getPost('id');
+            $idCourse = $this->request->getPost('id');
             if ($this->validate($rules)) {
                 $img = $this->request->getFile('userfile');
                 if (!$img->hasMoved()) {
-                    $filepath = $img->getRandomName();
-                    $img->move('uploads/', $filepath);
+                    $filePath = $img->getRandomName();
+                    $img->move('uploads/', $filePath);
                 }
                 $data = [
                     'Name' => $this->request->getPost('name'),
                     'Price' => $this->request->getPost('price'),
-                    'Avatar' => $filepath,
+                    'Avatar' => $filePath,
                     'Title' => $this->request->getPost('title'),
                     'Describe' => $this->request->getPost('describe'),
                 ];
                 $model = model(CourseModel::class);
-                $get_course = $model->getCourse($idcourse);
-                unlink("uploads/" . $get_course['Avatar']);
-                $model->update($idcourse, $data);
+                $getCourse = $model->getCourse($idCourse,1);
+                if (strpos($getCourse['Avatar'], 'via') != 8) {
+                    unlink("uploads/" . $getCourse['Avatar']);
+                }
+                $model->update($idCourse, $data);
                 return redirect()->to('showCourse');
             } else {
                 $data['validation'] = $this->validator;
                 $model = model(CourseModel::class);
-                $data['getcourse'] = $model->getCourse($idcourse);
+                $data['getCourse'] = $model->getCourse($idCourse);
                 return view('Admin/UpdateCourseView', $data);
             }
         } else {
             $model = new CourseModel();
-            $data['getcourse'] = $model->getCourse($id);
+            $data['getCourse'] = $model->getCourse($id, 2);
             return view('Admin/UpdateCourseView', $data);
         }
     }

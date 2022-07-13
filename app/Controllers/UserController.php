@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use App\Models\OrderModel;
 use CodeIgniter\Files\File;
 use CodeIgniter\RESTful\ResourceController;
 use CodeIgniter\API\ResponseTrait;
@@ -9,7 +10,7 @@ use App\Models\UserModel;
 
 $this->session = \Config\Services::session();
 
-class UserControl extends ResourceController
+class UserController extends ResourceController
 {
     protected $table = 'user';
     protected $primaryKey = 'ID';
@@ -17,7 +18,8 @@ class UserControl extends ResourceController
     public function index()
     {
         $model = new UserModel();
-        $data['user'] = $model->findAll();
+        $data['user'] = $model->paginate(2);
+        $data['pager'] = $model->pager;
         return $this->respond($data);
     }
     public function login()
@@ -59,32 +61,35 @@ class UserControl extends ResourceController
     }
     public function showUser($email = null)
     {
-        $model = model(UserModel::class);
-        $get_user = $model->getUser($email);
-        for ($i = 0; $i < count($get_user); $i++) {
-            $get_name_course = model(OrderModel::class);
-            $course = $get_name_course->join('course', 'course.ID = `order`.idcourse')
+        $model = new UserModel();
+        $getUser = $model->getUser($email);
+        for ($i = 0; $i < count($getUser); $i++) {
+            $getNameCourse = new OrderModel();
+            $course = $getNameCourse->join('course', 'course.ID = `order`.idcourse')
                 ->join('user', 'user.ID = `order`.iduser')
                 ->select('course.Name')
                 ->where('`order`.status', 2)
-                ->where('user.Email', $get_user[$i]['Email'])
-                ->findAll();;
+                ->where('user.Email', $getUser[$i]['Email'])
+                ->findAll();
             if ($course == false) {
-                array_push($get_user[$i], ' ');
+                array_push($getUser[$i], ' ');
             } else {
                 for ($j = 0; $j < count($course); $j++) {
-                    array_push($get_user[$i], implode(" ", $course[$j]));
+                    array_push($getUser[$i], implode(" ", $course[$j]));
                 }
             }
         }
-        $data['getuser'] = $get_user;
+        $data['getUser'] = $getUser;
+        $data['pager'] = $model->pager;
         return view('Admin/UserView', $data);
     }
     public function deleteUser($id)
     {
         $model = model(UserModel::class);
-        $get_avatar = $model->getUser($id);
-        unlink("uploads/" . $get_avatar['Avatar']);
+        $getAvatar = $model->getUser($id);
+        if (strpos($getAvatar['Avatar'], 'via') != 8) {
+            unlink("uploads/" . $getAvatar['Avatar']);
+        }
         $model->deleteUser($id);
         return redirect()->to('showUser');
     }
@@ -141,7 +146,7 @@ class UserControl extends ResourceController
                 'Password' => md5($this->request->getPost('pass')),
                 'Status' => $this->request->getPost('status'),
             ];
-            $model = model(UserModel::class);
+            $model = new UserModel();
             //var_dump($data);
             $model->insertUser($data);
             return redirect()->to('showUser');
@@ -193,17 +198,19 @@ class UserControl extends ResourceController
             if ($this->validate($rules)) {
 
                 $model = model(UserModel::class);
-                $get_avatar = $model->getUser($iduser);
+                $getAvatar = $model->getUser($iduser);
                 if ($img != "") {
                     if (!$img->hasMoved()) {
                         $filepath = $img->getRandomName();
                         $img->move('uploads/', $filepath);
                     }
-                    unlink("uploads/" . $get_avatar['Avatar']);
+                    if (strpos($getAvatar['Avatar'], 'via') != 8) {
+                        unlink("uploads/" . $getAvatar['Avatar']);
+                    }
                 } else {
-                    $filepath = $get_avatar['Avatar'];
+                    $filepath = $getAvatar['Avatar'];
                 }
-                if ($get_avatar['Password'] == $pass) {
+                if ($getAvatar['Password'] == $pass) {
                     $data = [
                         'Name' => $name,
                         'Email' => $email,
@@ -224,15 +231,15 @@ class UserControl extends ResourceController
                 }
                 return redirect()->to('showUser');
             } else {
-                $model = model(UserModel::class);
-                $data['getuser'] = $model->getUser($iduser);
+                $model = new UserModel();
+                $data['getUser'] = $model->getUser($iduser);
                 $data['validation'] = $this->validator;
                 return view('Admin/UpdateUserView', $data);
             }
         } else {
 
-            $model = model(UserModel::class);
-            $data['getuser'] = $model->getUser($id);
+            $model = new UserModel();
+            $data['getUser'] = $model->getUser($id);
             return view('Admin/UpdateUserView', $data);
         }
     }
