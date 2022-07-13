@@ -71,6 +71,7 @@ class UserController extends ResourceController
                 ->where('`order`.status', 2)
                 ->where('user.Email', $getUser[$i]['Email'])
                 ->findAll();
+                //var_dump($course);
             if ($course == false) {
                 array_push($getUser[$i], ' ');
             } else {

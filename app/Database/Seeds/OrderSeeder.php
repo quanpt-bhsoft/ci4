@@ -21,13 +21,13 @@ class OrderSeeder extends Seeder
 
         $faker = Factory::create();
         for ($i = 0; $i < 30; $i++) {
-            $randomIdCourse = $faker->randomElements($idCourse);
-            $randomIdUser = $faker->randomElements($idUser);
-            $randomStatus = $faker->randomElements([0, 1, 2]);
+            $randomIdCourse = $faker->randomElement($idCourse);
+            $randomIdUser = $faker->randomElement($idUser);
+            $randomStatus = $faker->randomElement([0, 1, 2]);
             $data = array(
-                'idcourse' => $randomIdCourse[0]['ID'],
-                'iduser' => $randomIdUser[0]['ID'],
-                'Status' => $randomStatus[0]
+                'idcourse' => $randomIdCourse['ID'],
+                'iduser' => $randomIdUser['ID'],
+                'Status' => $randomStatus
             );
             $this->db->table('order')->insert($data);
         }

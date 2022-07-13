@@ -12,14 +12,16 @@ class UserSeeder extends Seeder
 {
     public function run()
     {
-        $faker = Factory::create();        
-        $formatters = [
-            'Name' => $faker->name,
-            'Email'=> $faker->email,
-            'Avatar'     => Image::imageUrl(800, 400),
-            'Password'      => $faker->md5(),
-            'Status'      => 0,
-        ]; 
-        $this->db->table('user')->insert($formatters);
+        $faker = Factory::create();
+        for ($i = 0; $i < 10; $i++) {
+            $formatters = [
+                'Name' => $faker->name,
+                'Email' => $faker->email,
+                'Avatar'     => Image::imageUrl(800, 400),
+                'Password'      => $faker->md5(),
+                'Status'      => 0,
+            ];
+            $this->db->table('user')->insert($formatters);
+        }
     }
 }
