@@ -11,22 +11,24 @@ $this->session = \Config\Services::session();
 
 class CourseController extends BaseController
 {
+    public function __construct()
+    {
+       $this->courseModel = new CourseModel();
+    }
     public function showCourse($id = null)
     {
-        $model = new CourseModel();
-        $getCourse = $model->getCourse($id, 2);
+        $getCourse =  $this->courseModel->getCourse($id, 2);
         $data['getCourse'] = $getCourse;
-        $data['pager'] = $model->pager;
+        $data['pager'] =  $this->courseModel->pager;
         return view('Admin/UserView', $data);
     }
     public function deleteCourse($id)
     {
-        $model = model(CourseModel::class);
-        $getCourse = $model->getCourse($id, 1);
+        $getCourse =  $this->courseModel->getCourse($id, 1);
         if (strpos($getCourse['Avatar'], 'via') != 8) {
             unlink("uploads/" . $getCourse['Avatar']);
         }
-        $model->delete(['ID' => $id]);
+         $this->courseModel->delete(['ID' => $id]);
         return redirect()->to('showCourse');
     }
     public function showInsertCourse()
@@ -75,8 +77,7 @@ class CourseController extends BaseController
                 'Title' => $this->request->getPost('title'),
                 'Describe' => $this->request->getPost('describe'),
             ];
-            $model = new CourseModel();
-            $model->insert($data);
+             $this->courseModel->insert($data);
             return redirect()->to('showCourse');
         } else {
             $data['validation'] = $this->validator;
@@ -125,22 +126,19 @@ class CourseController extends BaseController
                     'Title' => $this->request->getPost('title'),
                     'Describe' => $this->request->getPost('describe'),
                 ];
-                $model = model(CourseModel::class);
-                $getCourse = $model->getCourse($idCourse,1);
+                $getCourse =  $this->courseModel->getCourse($idCourse,1);
                 if (strpos($getCourse['Avatar'], 'via') != 8) {
                     unlink("uploads/" . $getCourse['Avatar']);
                 }
-                $model->update($idCourse, $data);
+                 $this->courseModel->update($idCourse, $data);
                 return redirect()->to('showCourse');
             } else {
                 $data['validation'] = $this->validator;
-                $model = model(CourseModel::class);
-                $data['getCourse'] = $model->getCourse($idCourse);
+                $data['getCourse'] =  $this->courseModel->getCourse($idCourse);
                 return view('Admin/UpdateCourseView', $data);
             }
         } else {
-            $model = new CourseModel();
-            $data['getCourse'] = $model->getCourse($id, 2);
+            $data['getCourse'] =  $this->courseModel->getCourse($id, 2);
             return view('Admin/UpdateCourseView', $data);
         }
     }

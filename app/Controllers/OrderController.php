@@ -9,28 +9,29 @@ $this->session = \Config\Services::session();
 
 class OrderController extends BaseController
 {
+    public function __construct()
+    {
+        $this->orderModel = new OrderModel();
+    }
     public function showOrder()
     {
-        $model = new OrderModel();
-        $data['getOrderNew'] = $model->getOrder(0);
-        $data['pagerNew'] = $model->pager;
-        $data['getOrderDeny'] = $model->getOrder(1);
-        $data['pagerDeny'] = $model->pager;
-        $data['getOrderAccept'] = $model->getOrder(2);
-        $data['pagerAccept'] = $model->pager;
+        $data['getOrderNew'] = $this->orderModel->getOrder(0);
+        $data['pagerNew'] = $this->orderModel->pager;
+        $data['getOrderDeny'] = $this->orderModel->getOrder(1);
+        $data['pagerDeny'] = $this->orderModel->pager;
+        $data['getOrderAccept'] = $this->orderModel->getOrder(2);
+        $data['pagerAccept'] = $this->orderModel->pager;
         //var_dump($data['get_order_new']);
         return view('Admin/UserView', $data);
     }
     public function acceptOrder($idorder)
     {
-        $model = new OrderModel();
-        $model->update($idorder, 2);
+        $this->orderModel->update($idorder, 2);
         return redirect()->to('showOrder');
     }
     public function denyOrder($idorder)
     {
-        $model = new OrderModel;
-        $model->update($idorder, 1);
+        $this->orderModel->update($idorder, 1);
         return redirect()->to('showOrder');
     }
 }

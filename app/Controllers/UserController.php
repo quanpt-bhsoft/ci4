@@ -12,14 +12,14 @@ $this->session = \Config\Services::session();
 
 class UserController extends ResourceController
 {
-    protected $table = 'user';
-    protected $primaryKey = 'ID';
-    protected $allowedFields = ['Name', 'Email', 'Avatar', 'Password', 'Status'];
+    public function __construct()
+    {
+        $this->userModel = new UserModel();
+    }
     public function index()
     {
-        $model = new UserModel();
-        $data['user'] = $model->paginate(2);
-        $data['pager'] = $model->pager;
+        $data['user'] = $this->userModel->paginate(2);
+        $data['pager'] = $this->userModel->pager;
         return $this->respond($data);
     }
     public function login()
@@ -42,8 +42,7 @@ class UserController extends ResourceController
         if ($this->validate($rules)) {
             $email = $this->request->getPost('email');
             $pass = $this->request->getPost('pass');
-            $model = new UserModel();
-            $check = $model->login($email, md5($pass));
+            $check = $this->userModel->login($email, md5($pass));
             if (isset($check)) {
                 $_SESSION['user'] = $check;
                 if ($check['Status'] == 1) {
@@ -61,8 +60,7 @@ class UserController extends ResourceController
     }
     public function showUser($email = null)
     {
-        $model = new UserModel();
-        $getUser = $model->getUser($email);
+        $getUser = $this->userModel->getUser($email);
         for ($i = 0; $i < count($getUser); $i++) {
             $getNameCourse = new OrderModel();
             $course = $getNameCourse->join('course', 'course.ID = `order`.idcourse')
@@ -81,17 +79,16 @@ class UserController extends ResourceController
             }
         }
         $data['getUser'] = $getUser;
-        $data['pager'] = $model->pager;
+        $data['pager'] = $this->userModel->pager;
         return view('Admin/UserView', $data);
     }
     public function deleteUser($id)
     {
-        $model = model(UserModel::class);
-        $getAvatar = $model->getUser($id);
+        $getAvatar = $this->userModel->getUser($id);
         if (strpos($getAvatar['Avatar'], 'via') != 8) {
             unlink("uploads/" . $getAvatar['Avatar']);
         }
-        $model->deleteUser($id);
+        $this->userModel->deleteUser($id);
         return redirect()->to('showUser');
     }
     public function showInsertUser()
@@ -147,9 +144,8 @@ class UserController extends ResourceController
                 'Password' => md5($this->request->getPost('pass')),
                 'Status' => $this->request->getPost('status'),
             ];
-            $model = new UserModel();
             //var_dump($data);
-            $model->insertUser($data);
+            $this->userModel->insertUser($data);
             return redirect()->to('showUser');
         } else {
             $data['validation'] = $this->validator;
@@ -197,9 +193,7 @@ class UserController extends ResourceController
             //upload anh
             $img = $this->request->getFile('userfile');
             if ($this->validate($rules)) {
-
-                $model = model(UserModel::class);
-                $getAvatar = $model->getUser($iduser);
+                $getAvatar = $this->userModel->getUser($iduser);
                 if ($img != "") {
                     if (!$img->hasMoved()) {
                         $filepath = $img->getRandomName();
@@ -219,7 +213,7 @@ class UserController extends ResourceController
                         'Password' => $pass,
                         'Status' => $status,
                     ];
-                    $model->update($iduser, $data);
+                    $this->userModel->update($iduser, $data);
                 } else {
                     $data = [
                         'Name' => $name,
@@ -228,19 +222,16 @@ class UserController extends ResourceController
                         'Password' => md5($pass),
                         'Status' => $status,
                     ];
-                    $model->update($iduser, $data);
+                    $this->userModel->update($iduser, $data);
                 }
                 return redirect()->to('showUser');
             } else {
-                $model = new UserModel();
-                $data['getUser'] = $model->getUser($iduser);
+                $data['getUser'] = $this->userModel->getUser($iduser);
                 $data['validation'] = $this->validator;
                 return view('Admin/UpdateUserView', $data);
             }
         } else {
-
-            $model = new UserModel();
-            $data['getUser'] = $model->getUser($id);
+            $data['getUser'] = $this->userModel->getUser($id);
             return view('Admin/UpdateUserView', $data);
         }
     }
