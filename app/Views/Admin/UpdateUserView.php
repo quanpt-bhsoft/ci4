@@ -40,7 +40,7 @@ $this->section('content');
                                                          if (strpos($getUser['Avatar'], 'via') == 8) {
                                                             echo $getUser['Avatar'];
                                                          } else {
-                                                            echo "../uploads/" . $getUser['Avatar'];
+                                                            echo base_url("../uploads/".$getUser['Avatar']);
                                                          }
                                                          ?>" alt="Image">
             <input type="file" name="userfile" size="20">

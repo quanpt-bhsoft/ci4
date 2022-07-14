@@ -35,7 +35,7 @@ $this->section('content');
                                                                            if (strpos($getCourse['Avatar'], 'via') == 8) {
                                                                               echo $getCourse['Avatar'];
                                                                            } else {
-                                                                              echo "../uploads/" . $getCourse['Avatar'];
+                                                                              echo base_url("../uploads/" . $getCourse['Avatar']) ;
                                                                            }
                                                                            ?>" alt="Image">
             <input required="" type="file" name="userfile" size="20">
