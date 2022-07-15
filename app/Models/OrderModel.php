@@ -16,8 +16,8 @@ class OrderModel extends Model
         return $this   ->join('course', 'course.ID = `order`.idcourse')
                 ->join('user', 'user.ID = `order`.iduser')
                 ->select('user.Name AS username')
-                ->select('`order`.ID,`order`.iduser')
-                ->select('course.Name')
+                ->select('`order`.ID AS idorder,`order`.iduser')
+                ->select('course.Name AS name course')
                 ->where('`order`.status', $check)
                 ->paginate(2);
     }

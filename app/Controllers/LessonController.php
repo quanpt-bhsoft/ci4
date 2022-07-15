@@ -3,11 +3,11 @@
 namespace App\Controllers;
 
 use App\Models\LessonModel;
-use CodeIgniter\Files\File;
+use CodeIgniter\RESTful\ResourceController;
 
 $this->session = \Config\Services::session();
 
-class LessonController extends BaseController
+class LessonController extends ResourceController
 {
     public function __construct()
     {
@@ -17,19 +17,21 @@ class LessonController extends BaseController
     {
         $data['getLesson'] = $this->lessonModel->getLesson(null);
         $data['pager'] = $this->lessonModel->pager;
-        return view('Admin/UserView', $data);
+        return $this->respond($data);
+        // return view('Admin/UserView', $data);
     }
     public function showUpdateLesson($id)
     {
-        $data['getLesson'] = $this->lessonModel->getLesson($id);
-        return view('Admin/UpdateLessonView', $data);
+        $data = $this->lessonModel->find($id);
+        if (empty($data)) {
+            return $this->failNotFound('Not Lesson');
+        } else {
+            $getLesson = $this->lessonModel->getLesson($id);
+            return $this->respond($getLesson);
+            // return view('Admin/UpdateLessonView', $data);
+        }
     }
-    public function showInsertLesson()
-    {
-        $CourseModel = model(CourseModel::class);
-        $data['getCourse'] = $CourseModel->getCourse(null, null);
-        return view('Admin/InsertLessonView', $data);
-    }
+
     public function insertLesson()
     {
         $rules = [
@@ -45,33 +47,55 @@ class LessonController extends BaseController
             $this->lessonModel->insert($data);
             return redirect()->to('showLesson');
         } else {
-            $data['validation'] = $this->validator;
-            return view('Admin/InsertLessonView', $data);
+            return $this->fail($this->validator->getErrors());
+            // $data['validation'] = $this->validator;
+            // return view('Admin/InsertLessonView', $data);
         }
     }
-    public function deleteLesson($id)
-    {
-        $this->lessonModel->delete(['ID' => $id]);
-        return redirect()->to('showLesson');
-    }
+
     public function updateLesson($id)
     {
-        $rules = [
-            'title' => 'required',
-            'content' => 'required',
-        ];
-        $idLesson = $this->request->getPost('id');
-        if ($this->validate($rules)) {
-            $data = [
-                'Title' => $this->request->getPost('title'),
-                'Çontent' => $this->request->getPost('content'),
-            ];
-            $this->lessonModel->update($idLesson, $data);
-            return redirect()->to('showLesson');
+        $data = $this->lessonModel->find($id);
+        if (empty($data)) {
+            return $this->failNotFound('Not Lesson');
         } else {
-            $data['validation'] = $this->validator;
-            $data['getLesson'] = $this->lessonModel->getLesson($idLesson);
-            return view('Admin/UpdateLessonView', $data);
+            $rules = [
+                'id' => 'required',
+                'title' => 'required',
+                'content' => 'required',
+            ];
+            $lessonId = $this->request->getVar('id');
+            if ($this->validate($rules)) {
+                $dataUpdate = [
+                    'Title' => $this->request->getVar('title'),
+                    'Content' => $this->request->getVar('content'),
+                ];
+                $this->lessonModel->update($lessonId, $dataUpdate);
+                return $this->respondUpdated($dataUpdate);
+            } else {
+                return $this->fail($this->validator->getErrors());
+                // $data['validation'] = $this->validator;
+                // $data['getLesson'] = $this->lessonModel->getLesson($idLesson);
+                // return view('Admin/UpdateLessonView', $data);
+            }
         }
+    }
+        public function deleteLesson($id)
+    {
+        $data = $this->lessonModel->find($id);
+        if (empty($data)) {
+            return $this->failNotFound('Not Lesson');
+        } else {
+            $check = $this->lessonModel->delete(['ID' => $id]);
+            return $this->respondDeleted($check);
+            // return redirect()->to('showLesson');
+        }
+    }
+    public function showInsertLesson()
+    {
+        $CourseModel = model(CourseModel::class);
+        $data['getCourse'] = $CourseModel->getCourse(null, null);
+        return $this->respond($data);
+        // return view('Admin/InsertLessonView', $data);
     }
 }

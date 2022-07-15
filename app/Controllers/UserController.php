@@ -3,9 +3,7 @@
 namespace App\Controllers;
 
 use App\Models\OrderModel;
-use CodeIgniter\Files\File;
 use CodeIgniter\RESTful\ResourceController;
-use CodeIgniter\API\ResponseTrait;
 use App\Models\UserModel;
 
 $this->session = \Config\Services::session();
@@ -16,22 +14,7 @@ class UserController extends ResourceController
     {
         $this->userModel = new UserModel();
     }
-    public function index()
-    {
-        $data['user'] = $this->userModel->paginate(2);
-        $data['pager'] = $this->userModel->pager;
-        return $this->respond($data);
-    }
-    public function login()
-    {
-        if (isset(session()->get('user')['Status']) && session()->get('user')['Status'] == 0) {
-            return redirect()->to('/');
-        } elseif (isset(session()->get('user')['Status']) && session()->get('user')['Status'] == 1) {
-            return redirect()->to('showUser');
-        } else {
-            return view('Admin/LoginView');
-        }
-    }
+
     public function checkLogin()
     {
         $rules = [
@@ -46,16 +29,19 @@ class UserController extends ResourceController
             if (isset($check)) {
                 $_SESSION['user'] = $check;
                 if ($check['Status'] == 1) {
-                    return redirect()->to('showUser');
+                    echo "successfully logged into admin";
+                    // return redirect()->to('showUser');
                 } else {
-                    return redirect()->to('/');
+                    echo "successfully logged into user";
+                    // return redirect()->to('/');
                 }
             } else {
-                echo "Dang Nhap That Bai";
+                echo "Login failed";
             }
         } else {
-            $data['validation'] = $this->validator;
-            return view('LoginView', $data);
+            return $this->fail($this->validator->getErrors());
+            // $data['validation'] = $this->validator;
+            // return view('Admin/LoginView', $data);
         }
     }
     public function showUser($email = null)
@@ -80,22 +66,11 @@ class UserController extends ResourceController
         }
         $data['getUser'] = $getUser;
         $data['pager'] = $this->userModel->pager;
-        //$this->respond($data);
-        return view('Admin/UserView', $data);
+        return $this->respond($data);
+        // return view('Admin/UserView', $data);
     }
-    public function deleteUser($id)
-    {
-        $getAvatar = $this->userModel->getUser($id);
-        if (strpos($getAvatar['Avatar'], 'via') != 8) {
-            unlink("uploads/" . $getAvatar['Avatar']);
-        }
-        $this->userModel->deleteUser($id);
-        return redirect()->to('showUser');
-    }
-    public function showInsertUser()
-    {
-        return view('Admin/InsertUserView');
-    }
+
+
     public function insertUser()
     {
         $helpers = ['form'];
@@ -145,107 +120,136 @@ class UserController extends ResourceController
                 'Password' => md5($this->request->getPost('pass')),
                 'Status' => $this->request->getPost('status'),
             ];
-            //var_dump($data);
-            $check['check'] = $this->userModel->insertUser($data);
+            $this->userModel->insertUser($data);
             $check['data'] = $data;
-            //return $this->respond($check);
-            return redirect()->to('showUser');
+            return $this->respond($check);
+            // return redirect()->to('showUser');
         } else {
-            $data['validation'] = $this->validator;
-            return view('Admin/InsertUserView', $data);
+            return $this->fail($this->validator->getErrors());
+            // $data['validation'] = $this->validator;
+            // return view('Admin/InsertUserView', $data);
         }
     }
     public function showUpdateUser($id)
     {
-        $data['getUser'] = $this->userModel->getUser($id);
-        return view('Admin/UpdateUserView', $data);
+        $data = $this->userModel->find($id);
+        if (empty($data)) {
+            return $this->failNotFound('Not User');
+        } else {
+            $user['getUser'] = $this->userModel->getUser($id);
+            return $this->respond($user);
+            // return view('Admin/UpdateUserView', $user);
+        }
     }
     public function updateUser($id)
     {
-        $helpers = ['form'];
-        $rules = [
-            'name' => 'required',
-            'email' => [
-                'rules' => 'required|valid_email',
-                'lable' => 'Email address',
-                'errors' => [
-                    'required' => 'Nhâp dữ liệu cho Email',
-                    'valid_email' => 'Nhập đúng định dạng dữ liệu '
-                ]
-            ],
-            'pass' => [
-                'rules' => 'required|min_length[8]|pass_check',
-                'errors' => [
-                    'pass_check' => 'Mật khẩu phải có ít nhất 1 ký tự và 1 số',
-                ],
-            ],
-            'userfile' => [
-                'label' => 'Image File',
-                'rules' => 'uploaded[userfile]'
-                    . '|is_image[userfile]'
-                    . '|mime_in[userfile,image/jpg,image/jpeg,image/gif,image/png,image/webp]'
-                    . '|max_size[userfile,240000000]'
-                    . '|max_dims[userfile,2048,2048]',
-                'errors' => [
-                    'is_image' => 'Chọn ảnh đại diện'
-                ]
-            ],
-            'status' => 'required|in_list[0,1]',
-        ];
-        $iduser = $this->request->getPost('id');
-        $name = $this->request->getPost('name');
-        $email = $this->request->getPost('email');
-        $pass = $this->request->getPost('pass');
-        $status = $this->request->getPost('status');
-        //upload anh
-        $img = $this->request->getFile('userfile');
-        if ($this->validate($rules)) {
-            $getAvatar = $this->userModel->getUser($iduser);
-            if ($img != "") {
-                if (!$img->hasMoved()) {
-                    $filepath = $img->getRandomName();
-                    $img->move('uploads/', $filepath);
-                }
-                if (strpos($getAvatar['Avatar'], 'via') != 8) {
-                    unlink("uploads/" . $getAvatar['Avatar']);
-                }
-            } else {
-                $filepath = $getAvatar['Avatar'];
-            }
-            if ($getAvatar['Password'] == $pass) {
-                $data = [
-                    'Name' => $name,
-                    'Email' => $email,
-                    'Avatar' => $filepath,
-                    'Password' => $pass,
-                    'Status' => $status,
-                ];
-                $this->userModel->update($iduser, $data);
-            } else {
-                $data = [
-                    'Name' => $name,
-                    'Email' => $email,
-                    'Avatar' => $filepath,
-                    'Password' => md5($pass),
-                    'Status' => $status,
-                ];
-                $this->userModel->update($iduser, $data);
-            }
-            return redirect()->to('showUser');
+        $data = $this->userModel->find($id);
+        if (empty($data)) {
+            return $this->failNotFound('Not User');
         } else {
-            $data['getUser'] = $this->userModel->getUser($iduser);
-            $data['validation'] = $this->validator;
-            return view('Admin/UpdateUserView', $data);
+            $helpers = ['form'];
+            $rules = [
+                'name' => 'required',
+                'pass' => [
+                    'rules' => 'required|min_length[8]|pass_check',
+                    'errors' => [
+                        'pass_check' => 'Mật khẩu phải có ít nhất 1 ký tự và 1 số',
+                    ],
+                ],
+                'userfile' => [
+                    'label' => 'Image File',
+                    'rules' => 'uploaded[userfile]'
+                        . '|is_image[userfile]'
+                        . '|mime_in[userfile,image/jpg,image/jpeg,image/gif,image/png,image/webp]'
+                        . '|max_size[userfile,240000000]'
+                        . '|max_dims[userfile,2048,2048]',
+                    'errors' => [
+                        'is_image' => 'Chọn ảnh đại diện'
+                    ]
+                ],
+                'status' => 'required|in_list[0,1]',
+            ];
+            $iduser = $this->request->getPost('id');
+            $name = $this->request->getPost('name');
+            $pass = $this->request->getPost('pass');
+            $status = $this->request->getPost('status');
+            //upload anh
+            $img = $this->request->getFile('userfile');
+            if ($this->validate($rules)) {
+                $getAvatar = $this->userModel->getUser($id);
+                if ($img != "") {
+                    if (!$img->hasMoved()) {
+                        $filepath = $img->getRandomName();
+                        $img->move('uploads/', $filepath);
+                    }
+                    if (strpos($getAvatar['Avatar'], 'via') != 8) {
+                        if(file_exists("uploads/" . $getAvatar['Avatar'])){
+                            unlink("uploads/" . $getAvatar['Avatar']);
+                        }
+                    }
+                } else {
+                    $filepath = $getAvatar['Avatar'];
+                }
+                if ($getAvatar['Password'] == $pass) {
+                    $dataUpdate = [
+                        'Name' => $name,
+                        'Avatar' => $filepath,
+                        'Password' => $pass,
+                        'Status' => $status,
+                    ];
+                    $this->userModel->update($id, $dataUpdate);
+                } else {
+                    $dataUpdate = [
+                        'Name' => $name,
+                        'Avatar' => $filepath,
+                        'Password' => md5($pass),
+                        'Status' => $status,
+                    ];
+                    $this->userModel->update($id, $dataUpdate);
+                }
+                return $this->respond($dataUpdate);
+                // return redirect()->to('showUser');
+            } else {
+                return $this->fail($this->validator->getErrors());
+                // $data['getUser'] = $this->userModel->getUser($iduser);
+                // $data['validation'] = $this->validator;
+                // return view('Admin/UpdateUserView', $data);
+            }
         }
+    }
+    public function deleteUser($id)
+    {
+        $getAvatar = $this->userModel->getUser($id);
+        if (strpos($getAvatar['Avatar'], 'via') != 8) {
+            unlink("uploads/" . $getAvatar['Avatar']);
+        }
+        $check = $this->userModel->deleteUser($id);
+        return $this->respond($check);
+        // return redirect()->to('showUser');
     }
     public function logout()
     {
         if (isset($_SESSION['user'])) {
             $session = \Config\Services::session();
             $session->remove('user');
-            return redirect()->to('/');
+            echo "logout successfully";
+            // return redirect()->to('/');
         } else {
             return redirect()->to('login');
         }
+    }
+    public function login()
+    {
+        if (isset(session()->get('user')['Status']) && session()->get('user')['Status'] == 0) {
+            return redirect()->to('/');
+        } elseif (isset(session()->get('user')['Status']) && session()->get('user')['Status'] == 1) {
+            return redirect()->to('showUser');
+        } else {
+            return view('Admin/LoginView');
+        }
+    }
+    public function showInsertUser()
+    {
+        return view('Admin/InsertUserView');
     }
 }

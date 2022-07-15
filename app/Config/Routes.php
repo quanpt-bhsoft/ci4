@@ -82,9 +82,9 @@ $routes->group('', ['filter' => 'isLoggedInAdmin'], function ($routes) {
 });
 $routes->group('', ['filter' => 'isLoggedIn'], function ($routes) {
     $routes->post('add_order/(:num)', 'UserHomeController::addOrder/$1');
-    $routes->get('history_order/(:num)', 'UserHomeController::historyOrder/$1');
-    $routes->get('show_update_user1/(:num)','UserHomeController::showUpdateUser/$1');
-    $routes->put('update_user1/(:num)', 'UserHomeController::updateUser/$1');
+    $routes->get('history_order', 'UserHomeController::historyOrder');
+    $routes->get('show_update_user1','UserHomeController::showUpdateUser');
+    $routes->put('update_user1', 'UserHomeController::updateUser');
 });
 $routes->get('logout', 'UserController::logout');
 $routes->get('logout1', 'UserHomeController::logout');

@@ -3,11 +3,11 @@
 namespace App\Controllers;
 
 use App\Models\OrderModel;
-use CodeIgniter\Files\File;
+use CodeIgniter\RESTful\ResourceController;
 
 $this->session = \Config\Services::session();
 
-class OrderController extends BaseController
+class OrderController extends ResourceController
 {
     public function __construct()
     {
@@ -22,16 +22,29 @@ class OrderController extends BaseController
         $data['getOrderAccept'] = $this->orderModel->getOrder(2);
         $data['pagerAccept'] = $this->orderModel->pager;
         //var_dump($data['get_order_new']);
-        return view('Admin/UserView', $data);
+        return $this->respond($data);
+        // return view('Admin/UserView', $data);
     }
     public function acceptOrder($id)
     {
-        $this->orderModel->update($id,['Status' => 2]);
-        return redirect()->to('showOrder');
+        $data = $this->orderModel->find($id);
+        if (empty($data)) {
+            return $this->failNotFound('Not Order');
+        } else {
+            $check = $this->orderModel->update($id, ['Status' => 2]);
+            return $this->respondUpdated($check);
+            // return redirect()->to('showOrder');
+        }
     }
     public function denyOrder($id)
     {
-        $this->orderModel->update($id,['Status' => 1]);
-        return redirect()->to('showOrder');
+        $data = $this->orderModel->find($id);
+        if (empty($data)) {
+            return $this->failNotFound('Not Order');
+        } else {
+            $check = $this->orderModel->update($id, ['Status' => 1]);
+            return $this->respondUpdated($check);
+            // return redirect()->to('showOrder');
+        }
     }
 }
