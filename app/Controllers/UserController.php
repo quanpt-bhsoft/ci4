@@ -55,7 +55,7 @@ class UserController extends ResourceController
             }
         } else {
             $data['validation'] = $this->validator;
-            echo view('LoginView', $data);
+            return view('LoginView', $data);
         }
     }
     public function showUser($email = null)
@@ -80,7 +80,7 @@ class UserController extends ResourceController
         }
         $data['getUser'] = $getUser;
         $data['pager'] = $this->userModel->pager;
-        $this->respond($data);
+        //$this->respond($data);
         return view('Admin/UserView', $data);
     }
     public function deleteUser($id)
