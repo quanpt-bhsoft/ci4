@@ -1,4 +1,58 @@
+.user-information-container {
+  width: 60%;
+  margin: auto;
+}
 
+.header {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 30px;
+}
+
+.info-form {
+  display: grid;
+  grid-template-columns: 30% 70%;
+}
+
+.avatar {
+  width: 50%;
+  margin: 0 50px;
+}
+
+.user-name {
+  margin-top: 15px;
+  text-align: center;
+  font-size: 24px;
+}
+
+.avatar label:hover {
+  cursor: pointer;
+}
+
+.avatar img {
+  width: 180px;
+  height: 180px;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.info {
+  width: 70%;
+}
+
+.input-wrapper-info {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 15px;
+}
+
+.input-wrapper-info label {
+  font-weight: bold;
+}
+
+.input-wrapper-info > input,
+.input-wrapper-info > select,
+.input-wrapper-info > textarea 
 .quanLyTin {
   display: flex;
   justify-content: space-around;

@@ -3,7 +3,8 @@ $this->section('content');
 ?>
 <div class="container">
    <h2>Update Course</h2>
-   <form class="form-horizontal" enctype="multipart/form-data" action="update_course" method="post" autocomplete="off">
+   <form class="form-horizontal" enctype="multipart/form-data" action="<?php echo base_url('update_course/'.$getCourse['ID']) ?>" method="post" autocomplete="off">
+      <input type="text" name="_method" value="put" hidden>
       <div class="form-group">
          <label class="control-label col-sm-2" for="email">ID :</label>
          <div class="col-sm-10">

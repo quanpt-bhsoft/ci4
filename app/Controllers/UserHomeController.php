@@ -6,7 +6,6 @@ use App\Models\CourseModel;
 use App\Models\LessonModel;
 use App\Models\OrderModel;
 use App\Models\UserModel;
-use CodeIgniter\Files\File;
 
 $this->session = \Config\Services::session();
 
@@ -38,56 +37,68 @@ class UserHomeController extends BaseController
         //var_dump( $data['get_course'][0]);
         return view('home', $data);
     }
+    public function showUpdateUser($id)
+    {
+        $model = new UserModel();
+        $data['getUser'] = $model->getUser($id);
+        return view('User/Home', $data);
+    }
     public function updateUser($id)
     {
         $helpers = ['form'];
-        if ($this->request->getMethod() == 'post') {
-            $name = $this->request->getPost('name');
-            $email = $this->request->getPost('email');
-            $pass = $this->request->getPost('pass');
-            //upload anh
-            $validationRule = [
-                'avatar' => [
-                    'label' => 'Image File',
-                    'rules' => 'uploaded[avatar]'
-                        . '|is_image[avatar]'
-                        . '|mime_in[avatar,image/jpg,image/jpeg,image/gif,image/png,image/webp]'
-                        . '|max_size[avatar,240000000]'
-                        . '|max_dims[avatar,2048,2048]',
-                ],
-            ];
-            $img = $this->request->getFile('avatar');
-            $model = new UserModel();
-            $getAvatar = $model->getUser($id);
-            if ($img != "") {
-                if (!$img->hasMoved()) {
-                    $filepath = $img->getRandomName();
-                    $img->move('uploads/', $filepath);
-                }
-                unlink("uploads/" . $getAvatar[0]['Avatar']);
-            } else {
-                $filepath = $getAvatar[0]['Avatar'];
-            }
-            if ($getAvatar[0]['Password'] == $pass) {
-                $model->updateUser($id, $name, $email, $pass, $filepath, 0);
-            } else {
-                $model->updateUser($id, $name, $email, md5($pass), $filepath, 0);
-            }
-            return redirect()->to('/');
+        $name = $this->request->getPost('name');
+        $email = $this->request->getPost('email');
+        $pass = $this->request->getPost('pass');
+        //upload anh
+        $validationRule = [
+            'avatar' => [
+                'label' => 'Image File',
+                'rules' => 'uploaded[avatar]'
+                    . '|is_image[avatar]'
+                    . '|mime_in[avatar,image/jpg,image/jpeg,image/gif,image/png,image/webp]'
+                    . '|max_size[avatar,240000000]'
+                    . '|max_dims[avatar,2048,2048]',
+            ],
+        ];
+        $img = $this->request->getFile('avatar');
+        $model = new UserModel();
+        $getAvatar = $model->getUser($id);
+        if ($img != "") {
+            if (!$img->hasMoved()) {
+                $filepath = $img->getRandomName();
+                $img->move('uploads/', $filepath); 
+                
+            }unlink("uploads/" . $getAvatar['Avatar']);
         } else {
-            $model = new UserModel();
-            $data['getUser'] = $model->getUser($id);
-            return view('User/Home', $data);
+            $filepath = $getAvatar['Avatar'];
         }
+        if ($getAvatar['Password'] == $pass) {
+            $data = [
+                'Name' => $name,
+                'Email' => $email,
+                'Password' => $pass,
+                'Avatar' => $filepath,
+                'Status' => 0
+            ];
+            $model->update($id, $data);
+        } else {
+
+            $data = [
+                'Name' => $name,
+                'Email' => $email,
+                'Password' => md5($pass),
+                'Avatar' => $filepath,
+                'Status' => 0
+            ];
+            $model->update($id, $data);
+        }
+        return redirect()->to('/');
     }
     public function detailCourse($id)
     {
-        $model =new CourseModel();
+        $model = new CourseModel();
         $getCourse = $model->getCourse($id, 1);
-        //var_dump($get_course);
-
         $orderLesson = new LessonModel();
-
         $data['getLesson'] = $orderLesson->join('course', 'course.ID = lesson.idcourse')
             ->select('lesson.Title,lesson.Content')
             ->where('idcourse', $id)
@@ -154,9 +165,19 @@ class UserHomeController extends BaseController
                     'status' => 0
                 ];
                 $model->insert($data);
-                return redirect()->to('delete_cart/' . $idCourse);
+                for ($i = 0; $i < count($_SESSION['cart']); $i++) {
+                    if ($_SESSION['cart'][$i]['ID'] == $idCourse) {
+                        array_splice($_SESSION['cart'], $i, 1);
+                    }
+                }
+                return redirect()->to('cart');
             } else {
-                return redirect()->to('delete_cart/' . $idCourse);
+                for ($i = 0; $i < count($_SESSION['cart']); $i++) {
+                    if ($_SESSION['cart'][$i]['ID'] == $idCourse) {
+                        array_splice($_SESSION['cart'], $i, 1);
+                    }
+                }
+                return redirect()->to('cart');
             }
         }
     }

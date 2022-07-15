@@ -24,14 +24,14 @@ class OrderController extends BaseController
         //var_dump($data['get_order_new']);
         return view('Admin/UserView', $data);
     }
-    public function acceptOrder($idorder)
+    public function acceptOrder($id)
     {
-        $this->orderModel->update($idorder, 2);
+        $this->orderModel->update($id,['Status' => 2]);
         return redirect()->to('showOrder');
     }
-    public function denyOrder($idorder)
+    public function denyOrder($id)
     {
-        $this->orderModel->update($idorder, 1);
+        $this->orderModel->update($id,['Status' => 1]);
         return redirect()->to('showOrder');
     }
 }

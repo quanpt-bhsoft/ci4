@@ -17,7 +17,7 @@ if (is_file(SYSTEMPATH . 'Config/Routes.php')) {
  * --------------------------------------------------------------------
  */
 $routes->setDefaultNamespace('App\Controllers');
-$routes->setDefaultController('User_control');
+$routes->setDefaultController('UserControlller');
 $routes->setDefaultMethod('index');
 $routes->setTranslateURIDashes(false);
 $routes->set404Override();
@@ -36,47 +36,55 @@ $routes->set404Override();
 // We get a performance increase by specifying the default
 // route since we don't have to scan directories.
 //user
-$routes->resource('UserController');
+//$routes->resource('UserController');
 $routes->get('/', 'UserHomeController::user');
 
 $routes->get('login', 'UserController::login');
 $routes->post('check_login', 'UserController::checkLogin');
 
-$routes->get('detail_course/(:segment)', 'UserHomeController::detailCourse/$1');
+
+$routes->get('detail_course/(:num)', 'UserHomeController::detailCourse/$1');
+
 //cart
 $routes->get('cart', 'UserHomeController::cart');
-$routes->get('add_cart/(:segment)', 'UserHomeController::addCart/$1');
-$routes->get('delete_cart/(:segment)', 'UserHomeController::deleteCart/$1');
+$routes->post('add_cart/(:num)', 'UserHomeController::addCart/$1');
+$routes->delete('delete_cart/(:num)', 'UserHomeController::deleteCart/$1');
 
 $routes->group('', ['filter' => 'isLoggedInAdmin'], function ($routes) {
-    $routes->get('showUser', 'UserController::showUser');
-    $routes->get('showCourse', 'CourseController::showCourse');
     //user
-    $routes->get('delete_user/(:segment)', 'UserController::deleteUser/$1');
-    $routes->match(['get', 'post'], 'insert_user', 'UserController::insertUser');
+    $routes->get('showUser', 'UserController::showUser');
     $routes->get('show_insert_user', 'UserController::ShowInsertUser');
-    $routes->match(['get', 'post'], 'update_user/(:segment)', 'UserController::updateUser/$1');
+    $routes->post('insert_user', 'UserController::insertUser');
+    $routes->get('show_update_user/(:num)', 'UserController::showUpdateUser/$1');
+    $routes->put('update_user/(:num)', 'UserController::updateUser/$1');
+    $routes->delete('delete_user/(:num)', 'UserController::deleteUser/$1');
 
     //course 
-
-    $routes->get('delete_course/(:segment)', 'CourseController::deleteCourse/$1');
+    $routes->get('showCourse', 'CourseController::showCourse');
     $routes->get('show_insert_course', 'CourseController::showInsertCourse');
-    $routes->match(['get', 'post'], 'insert_course', 'CourseController::insertCourse');
-    $routes->match(['get', 'post'], 'update_course/(:segment)', 'CourseController::updateCourse/$1');
+    $routes->post('insert_course', 'CourseController::insertCourse');
+    $routes->get('show_update_course/(:num)', 'CourseController::showUpdateCourse/$1');
+    $routes->put('update_course/(:num)', 'CourseController::updateCourse/$1');
+    $routes->delete('delete_course/(:num)', 'CourseController::deleteCourse/$1');
+
     //order
     $routes->get('showOrder', 'OrderController::showOrder');
-    $routes->get('accept_order/(:segment)', 'OrderController::acceptOrder/$1');
-    $routes->get('deny_order/(:segment)', 'OrderController::denyOrder/$1');
+    $routes->put('accept_order/(:segment)', 'OrderController::acceptOrder/$1');
+    $routes->put('deny_order/(:num)', 'OrderController::denyOrder/$1');
+
     //lesson
     $routes->get('showLesson', 'LessonController::showLesson');
-    $routes->get('delete_lesson/(:segment)', 'LessonController::deleteLesson/$1');
-    $routes->match(['get', 'post'], 'update_lesson/(:segment)', 'LessonController::updateLesson/$1');
-    $routes->match(['get', 'post'], 'insert_lesson', 'LessonController::insertLesson');
+    $routes->get('show_insert_lesson','LessonController::showInsertLesson');
+    $routes->post('insert_lesson', 'LessonController::insertLesson');
+    $routes->get('show_update_lesson/(:num)','LessonController::showUpdateLesson/$1');
+    $routes->put('update_lesson/(:num)', 'LessonController::updateLesson/$1');
+    $routes->delete('delete_lesson/(:num)', 'LessonController::deleteLesson/$1');
 });
 $routes->group('', ['filter' => 'isLoggedIn'], function ($routes) {
-    $routes->get('add_order/(:segment)', 'UserHomeController::addOrder/$1');
-    $routes->get('history_order/(:segment)', 'UserHomeController::historyOrder/$1');
-    $routes->match(['get', 'post'], 'update_user1/(:segment)', 'UserHomeController::updateUser/$1');
+    $routes->post('add_order/(:num)', 'UserHomeController::addOrder/$1');
+    $routes->get('history_order/(:num)', 'UserHomeController::historyOrder/$1');
+    $routes->get('show_update_user1/(:num)','UserHomeController::showUpdateUser/$1');
+    $routes->put('update_user1/(:num)', 'UserHomeController::updateUser/$1');
 });
 $routes->get('logout', 'UserController::logout');
 $routes->get('logout1', 'UserHomeController::logout');

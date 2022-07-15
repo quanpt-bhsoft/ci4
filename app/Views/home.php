@@ -39,7 +39,7 @@ $this->section('Home');
                                         <li class="button-header margin-left "><a href="cart" style="align-items :center !important; height: 20px !important ;" class="btn btn3"><i class="fas fa-shopping-cart"></i></a></li>
                                         <?php if (isset($_SESSION['user']) && $_SESSION['user']['Status'] == 0) {
                                         ?>
-                                            <li class="button-header"><a href="update_user1/<?php echo $_SESSION['user']['ID'] ?>" class="btn btn3"><?php echo $_SESSION['user']['Name'] ?></a></li>
+                                            <li class="button-header"><a href="show_update_user1/<?php echo $_SESSION['user']['ID'] ?>" class="btn btn3"><?php echo $_SESSION['user']['Name'] ?></a></li>
                                             <li class="button-header"><a href="logout1" class="btn btn3">Logout</a></li>
                                         <?php
                                         } else {
@@ -119,11 +119,13 @@ $this->section('Home');
                                     <?php
                                     } else {
                                     ?>
-                                        <a href="add_cart/<?php echo $getCourse['ID'] ?>" class="border-btn"><i class="fas fa-shopping-cart"></i></a>
+                                        <form action="<?php echo base_url('add_cart/' . $getCourse['ID']) ?>" method="post">
+                                            <button class="border-btn"><i class="fas fa-shopping-cart"></i></button>
+                                        </form>
                                     <?php
                                     }
                                     ?>
-                                    <a href="detail_course/<?php echo $getCourse['ID'] ?>" class="border-btn ">Find out more</a>
+                                    <a href="detail_course/<?php echo $getCourse['ID'] ?>" class="border-btn ">See  Detail</a>
                                 </div>
                             </div>
                         </div>

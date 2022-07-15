@@ -33,8 +33,13 @@ $this->section('cart'); ?>
                                     <?php echo $_SESSION['cart'][$i]['Price'];
                                     echo 'VND' ?>
                                 </div>
-                                <a href="add_order/<?php echo $_SESSION['cart'][$i]['ID'] ?>">MUA</a>
-                                <a href="delete_cart/<?php echo $_SESSION['cart'][$i]['ID'] ?>"><span class="close">&#10005;</span></a>
+                                <form action="<?php echo base_url('add_order/'.$_SESSION['cart'][$i]['ID']) ?>" method="post">
+                                    <button>MUA</button>
+                                </form>
+                                <form action="<?php echo base_url('delete_cart/' . $_SESSION['cart'][$i]['ID']) ?>" method="post">
+                                <input type="text" value="delete" name="_method" hidden>
+                                    <button><span class="close">&#10005;</span></button>
+                                </form>
                             </div>
                         </div>
                     </div>

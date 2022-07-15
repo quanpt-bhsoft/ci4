@@ -19,6 +19,36 @@ class LessonController extends BaseController
         $data['pager'] = $this->lessonModel->pager;
         return view('Admin/UserView', $data);
     }
+    public function showUpdateLesson($id)
+    {
+        $data['getLesson'] = $this->lessonModel->getLesson($id);
+        return view('Admin/UpdateLessonView', $data);
+    }
+    public function showInsertLesson()
+    {
+        $CourseModel = model(CourseModel::class);
+        $data['getCourse'] = $CourseModel->getCourse(null, null);
+        return view('Admin/InsertLessonView', $data);
+    }
+    public function insertLesson()
+    {
+        $rules = [
+            'title' => 'required',
+            'content' => 'required',
+        ];
+        if ($this->validate($rules)) {
+            $data = [
+                'idcourse' => $this->request->getPost('course'),
+                'Title' => $this->request->getPost('title'),
+                'Content' => $this->request->getPost('content')
+            ];
+            $this->lessonModel->insert($data);
+            return redirect()->to('showLesson');
+        } else {
+            $data['validation'] = $this->validator;
+            return view('Admin/InsertLessonView', $data);
+        }
+    }
     public function deleteLesson($id)
     {
         $this->lessonModel->delete(['ID' => $id]);
@@ -26,52 +56,22 @@ class LessonController extends BaseController
     }
     public function updateLesson($id)
     {
-        if ($this->request->getMethod() == 'post') {
-            $rules = [
-                'title' => 'required',
-                'content' => 'required',
+        $rules = [
+            'title' => 'required',
+            'content' => 'required',
+        ];
+        $idLesson = $this->request->getPost('id');
+        if ($this->validate($rules)) {
+            $data = [
+                'Title' => $this->request->getPost('title'),
+                'Çontent' => $this->request->getPost('content'),
             ];
-            $idLesson = $this->request->getPost('id');
-            if ($this->validate($rules)) {
-                $data = [
-                    'Title' => $this->request->getPost('title'),
-                    'Çontent' => $this->request->getPost('content'),
-                ];
-                $this->lessonModel->update($idLesson, $data);
-                return redirect()->to('showLesson');
-            } else {
-                $data['validation'] = $this->validator;
-                $data['getLesson'] = $this->lessonModel->getLesson($idLesson);
-                return view('Admin/UpdateLessonView', $data);
-            }
+            $this->lessonModel->update($idLesson, $data);
+            return redirect()->to('showLesson');
         } else {
-            $data['getLesson'] = $this->lessonModel->getLesson($id);
+            $data['validation'] = $this->validator;
+            $data['getLesson'] = $this->lessonModel->getLesson($idLesson);
             return view('Admin/UpdateLessonView', $data);
-        }
-    }
-    public function insertLesson()
-    {
-        if ($this->request->getMethod() == 'post') {
-            $rules = [
-                'title' => 'required',
-                'content' => 'required',
-            ];
-            if ($this->validate($rules)) {
-                $data = [
-                    'idcourse' => $this->request->getPost('course'),
-                    'Title' => $this->request->getPost('title'),
-                    'Content' => $this->request->getPost('content')
-                ];
-                $this->lessonModel->insert($data);
-                return redirect()->to('showLesson');
-            } else {
-                $data['validation'] = $this->validator;
-                return view('Admin/InsertLessonView', $data);
-            }
-        } else {
-            $CourseModel = model(CourseModel::class);
-            $data['getCourse'] = $CourseModel->getCourse(null,null);
-            return view('Admin/InsertLessonView', $data);
         }
     }
 }

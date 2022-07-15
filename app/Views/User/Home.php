@@ -2,7 +2,8 @@
 $this->section('update'); ?>
 <div class="user-information-container">
   <div class="header">Thông tin cá nhân</div>
-  <form action="<?php echo $getUser['ID'] ?>" method="post" class="info-form" enctype="multipart/form-data">
+  <form action="<?php echo base_url('update_user1/'.$getUser['ID']) ?>" method="post" class="info-form" enctype="multipart/form-data">
+    <input type="text" value="put" name = "_method" hidden>
     <div class="avatar">
       <div class="input-img">
         <label for="inputImg">

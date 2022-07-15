@@ -69,7 +69,7 @@ class UserController extends ResourceController
                 ->where('`order`.status', 2)
                 ->where('user.Email', $getUser[$i]['Email'])
                 ->findAll();
-                //var_dump($course);
+            //var_dump($course);
             if ($course == false) {
                 array_push($getUser[$i], ' ');
             } else {
@@ -80,6 +80,7 @@ class UserController extends ResourceController
         }
         $data['getUser'] = $getUser;
         $data['pager'] = $this->userModel->pager;
+        $this->respond($data);
         return view('Admin/UserView', $data);
     }
     public function deleteUser($id)
@@ -145,93 +146,95 @@ class UserController extends ResourceController
                 'Status' => $this->request->getPost('status'),
             ];
             //var_dump($data);
-            $this->userModel->insertUser($data);
+            $check['check'] = $this->userModel->insertUser($data);
+            $check['data'] = $data;
+            //return $this->respond($check);
             return redirect()->to('showUser');
         } else {
             $data['validation'] = $this->validator;
             return view('Admin/InsertUserView', $data);
         }
     }
+    public function showUpdateUser($id)
+    {
+        $data['getUser'] = $this->userModel->getUser($id);
+        return view('Admin/UpdateUserView', $data);
+    }
     public function updateUser($id)
     {
         $helpers = ['form'];
-        if ($this->request->getMethod() == 'post') {
-            $rules = [
-                'name' => 'required',
-                'email' => [
-                    'rules' => 'required|valid_email',
-                    'lable' => 'Email address',
-                    'errors' => [
-                        'required' => 'Nhâp dữ liệu cho Email',
-                        'valid_email' => 'Nhập đúng định dạng dữ liệu '
-                    ]
+        $rules = [
+            'name' => 'required',
+            'email' => [
+                'rules' => 'required|valid_email',
+                'lable' => 'Email address',
+                'errors' => [
+                    'required' => 'Nhâp dữ liệu cho Email',
+                    'valid_email' => 'Nhập đúng định dạng dữ liệu '
+                ]
+            ],
+            'pass' => [
+                'rules' => 'required|min_length[8]|pass_check',
+                'errors' => [
+                    'pass_check' => 'Mật khẩu phải có ít nhất 1 ký tự và 1 số',
                 ],
-                'pass' => [
-                    'rules' => 'required|min_length[8]|pass_check',
-                    'errors' => [
-                        'pass_check' => 'Mật khẩu phải có ít nhất 1 ký tự và 1 số',
-                    ],
-                ],
-                'userfile' => [
-                    'label' => 'Image File',
-                    'rules' => 'uploaded[userfile]'
-                        . '|is_image[userfile]'
-                        . '|mime_in[userfile,image/jpg,image/jpeg,image/gif,image/png,image/webp]'
-                        . '|max_size[userfile,240000000]'
-                        . '|max_dims[userfile,2048,2048]',
-                    'errors' => [
-                        'is_image' => 'Chọn ảnh đại diện'
-                    ]
-                ],
-                'status' => 'required|in_list[0,1]',
-            ];
-            $iduser = $this->request->getPost('id');
-            $name = $this->request->getPost('name');
-            $email = $this->request->getPost('email');
-            $pass = $this->request->getPost('pass');
-            $status = $this->request->getPost('status');
-            //upload anh
-            $img = $this->request->getFile('userfile');
-            if ($this->validate($rules)) {
-                $getAvatar = $this->userModel->getUser($iduser);
-                if ($img != "") {
-                    if (!$img->hasMoved()) {
-                        $filepath = $img->getRandomName();
-                        $img->move('uploads/', $filepath);
-                    }
-                    if (strpos($getAvatar['Avatar'], 'via') != 8) {
-                        unlink("uploads/" . $getAvatar['Avatar']);
-                    }
-                } else {
-                    $filepath = $getAvatar['Avatar'];
+            ],
+            'userfile' => [
+                'label' => 'Image File',
+                'rules' => 'uploaded[userfile]'
+                    . '|is_image[userfile]'
+                    . '|mime_in[userfile,image/jpg,image/jpeg,image/gif,image/png,image/webp]'
+                    . '|max_size[userfile,240000000]'
+                    . '|max_dims[userfile,2048,2048]',
+                'errors' => [
+                    'is_image' => 'Chọn ảnh đại diện'
+                ]
+            ],
+            'status' => 'required|in_list[0,1]',
+        ];
+        $iduser = $this->request->getPost('id');
+        $name = $this->request->getPost('name');
+        $email = $this->request->getPost('email');
+        $pass = $this->request->getPost('pass');
+        $status = $this->request->getPost('status');
+        //upload anh
+        $img = $this->request->getFile('userfile');
+        if ($this->validate($rules)) {
+            $getAvatar = $this->userModel->getUser($iduser);
+            if ($img != "") {
+                if (!$img->hasMoved()) {
+                    $filepath = $img->getRandomName();
+                    $img->move('uploads/', $filepath);
                 }
-                if ($getAvatar['Password'] == $pass) {
-                    $data = [
-                        'Name' => $name,
-                        'Email' => $email,
-                        'Avatar' => $filepath,
-                        'Password' => $pass,
-                        'Status' => $status,
-                    ];
-                    $this->userModel->update($iduser, $data);
-                } else {
-                    $data = [
-                        'Name' => $name,
-                        'Email' => $email,
-                        'Avatar' => $filepath,
-                        'Password' => md5($pass),
-                        'Status' => $status,
-                    ];
-                    $this->userModel->update($iduser, $data);
+                if (strpos($getAvatar['Avatar'], 'via') != 8) {
+                    unlink("uploads/" . $getAvatar['Avatar']);
                 }
-                return redirect()->to('showUser');
             } else {
-                $data['getUser'] = $this->userModel->getUser($iduser);
-                $data['validation'] = $this->validator;
-                return view('Admin/UpdateUserView', $data);
+                $filepath = $getAvatar['Avatar'];
             }
+            if ($getAvatar['Password'] == $pass) {
+                $data = [
+                    'Name' => $name,
+                    'Email' => $email,
+                    'Avatar' => $filepath,
+                    'Password' => $pass,
+                    'Status' => $status,
+                ];
+                $this->userModel->update($iduser, $data);
+            } else {
+                $data = [
+                    'Name' => $name,
+                    'Email' => $email,
+                    'Avatar' => $filepath,
+                    'Password' => md5($pass),
+                    'Status' => $status,
+                ];
+                $this->userModel->update($iduser, $data);
+            }
+            return redirect()->to('showUser');
         } else {
-            $data['getUser'] = $this->userModel->getUser($id);
+            $data['getUser'] = $this->userModel->getUser($iduser);
+            $data['validation'] = $this->validator;
             return view('Admin/UpdateUserView', $data);
         }
     }

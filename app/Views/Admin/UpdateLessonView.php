@@ -8,7 +8,8 @@ $this->section('content');
       echo $validation->listErrors();
    }
    ?>
-   <form class="form-horizontal" enctype="multipart/form-data" action="update_lesson" method="post" autocomplete="off">
+   <form class="form-horizontal" enctype="multipart/form-data" action="<?php echo base_url('update_lesson/'.$getLesson[0]['ID']) ?>" method="post" autocomplete="off">
+      <input type="text" hidden name= "_method" value="put">
       <div class="form-group">
          <label class="control-label col-sm-2" for="email">ID :</label>
          <div class="col-sm-10">
