@@ -66,9 +66,9 @@ class UserHomeController extends BaseController
         if ($img != "") {
             if (!$img->hasMoved()) {
                 $filepath = $img->getRandomName();
-                $img->move('uploads/', $filepath); 
-                
-            }unlink("uploads/" . $getAvatar['Avatar']);
+                $img->move('uploads/', $filepath);
+            }
+            unlink("uploads/" . $getAvatar['Avatar']);
         } else {
             $filepath = $getAvatar['Avatar'];
         }
@@ -130,13 +130,12 @@ class UserHomeController extends BaseController
             array_push($_SESSION['cart'], $getCourse);
             return redirect()->to('cart');
         } else {
-            for ($i = 0; $i < count($_SESSION['cart']); $i++) {
-                if ($_SESSION['cart'][$i]['ID'] != $id) {
-                    array_push($_SESSION['cart'], $getCourse);
-                    return redirect()->to('cart');
-                } else {
-                    echo 'The course is already in your cart';
-                }
+            $index = array_search($id, array_column($_SESSION['cart'], 'ID'));
+            if ($index !== false) {
+                echo 'The course is already in your cart';
+            } else {
+                array_push($_SESSION['cart'], $getCourse);
+                return redirect()->to('cart');
             }
         }
     }
